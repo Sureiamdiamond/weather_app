@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 *.env
+h -u origin main
 env.g.dart
 .DS_Store
 .atom/
