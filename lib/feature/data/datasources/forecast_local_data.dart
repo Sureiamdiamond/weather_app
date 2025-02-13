@@ -4,14 +4,14 @@ import 'package:test_app/core/error/exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_app/feature/data/models/forecast_model.dart';
 
-abstract class PersonLocalData {
+abstract class ForecastLocalData {
   Future<GeneralForecastModel> getLastForecastFromCache();
   Future<void> forecastToCache(GeneralForecastModel forecast);
 }
 
 const CACHED_FORECAST = 'CACHED_PERSONS';
 
-class ForecastLocalDataSource implements PersonLocalData {
+class ForecastLocalDataSource implements ForecastLocalData {
   final SharedPreferences sharedPreferences;
 
   ForecastLocalDataSource({required this.sharedPreferences});

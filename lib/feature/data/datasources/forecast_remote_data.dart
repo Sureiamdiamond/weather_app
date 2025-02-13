@@ -7,9 +7,7 @@ import 'package:test_app/feature/data/models/forecast_model.dart';
 import 'package:test_app/feature/data/models/location_model.dart';
 
 abstract class ForecastRemoteData {
-  //http://api.weatherapi.com/v1/forecast.json?key=7e544180c7b345848a2195540240812&q=London&days=7
   Future<GeneralForecastModel> getForecast(String location, int days);
-  //https://api.weatherapi.com/v1/search.json?key=7e544180c7b345848a2195540240812&q=Moscow
   Future<List<LocationModel>> searchForecast(String location);
 }
 
