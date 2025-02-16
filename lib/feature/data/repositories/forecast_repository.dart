@@ -9,8 +9,8 @@ import 'package:test_app/feature/domain/entities/location_entity.dart';
 import 'package:test_app/feature/domain/repositories/forecast_repo.dart';
 
 class ForecastRepository implements ForecastRepo {
-  final ForecastRemoteDataSource remoteDataSource;
-  final ForecastLocalDataSource localDataSource;
+  final ForecastRemoteData remoteDataSource;
+  final ForecastLocalData localDataSource;
   final NetworkInfo networkInfo;
 
   ForecastRepository(

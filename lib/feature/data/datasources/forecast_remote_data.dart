@@ -20,7 +20,7 @@ class ForecastRemoteDataSource implements ForecastRemoteData {
   Future<GeneralForecastModel> getForecast(String location, int days) async {
     final response = await client.get(
         Uri.parse(
-            '//http://api.weatherapi.com/v1/forecast.json?key=${Env.forecastApiKey}&q=$location&days=$days'),
+            'http://api.weatherapi.com/v1/forecast.json?key=${Env.forecastApiKey}&q=$location&days=$days'),
         headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       final forecast = json.decode(response.body);
@@ -34,7 +34,7 @@ class ForecastRemoteDataSource implements ForecastRemoteData {
   Future<List<LocationModel>> searchForecast(String location) async {
     final response = await client.get(
         Uri.parse(
-            '//https://api.weatherapi.com/v1/search.json?key=${Env.forecastApiKey}&q=$location'),
+            'https://api.weatherapi.com/v1/search.json?key=${Env.forecastApiKey}&q=$location'),
         headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       final forecasts = json.decode(response.body);

@@ -34,7 +34,7 @@ class HourEntity {
   double? vismiles;
   double? gustmph;
   double? gustkph;
-  double? uv;
+  num? uv;
 
   HourEntity(
       {this.timeepoch,

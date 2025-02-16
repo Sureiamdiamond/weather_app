@@ -5,23 +5,18 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: f256b0c0ba6c7577c15e2e4e114755640a875e885099367bf6e012b19314c834
+      sha256: ae92f5d747aee634b87f89d9946000c2de774be1d6ac3e58268224348cd0101a
       url: "https://pub.dev"
     source: hosted
-    version: "72.0.0"
-  _macros:
-    dependency: transitive
-    description: dart
-    source: sdk
-    version: "0.3.2"
+    version: "61.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: b652861553cd3990d8ed361f7979dc6d7053a9ac8843fa73820ab68ce5410139
+      sha256: ea3d8652bda62982addfd92fdc2d0214e5f82e43325104990d4f4c4a2a313562
       url: "https://pub.dev"
     source: hosted
-    version: "6.7.0"
+    version: "5.13.0"
   args:
     dependency: transitive
     description:
@@ -202,10 +197,10 @@ packages:
     dependency: transitive
     description:
       name: dart_style
-      sha256: "7856d364b589d1f08986e140938578ed36ed948581fbc3bc9aef1805039ac5ab"
+      sha256: "1efa911ca7086affd35f463ca2fc1799584fb6aa89883cf0af8e3664d6a02d55"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.7"
+    version: "2.3.2"
   dartz:
     dependency: "direct main"
     description:
@@ -284,7 +279,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_bloc:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_bloc
       sha256: "153856bdaac302bbdc58a1d1403d50c40557254aa05eaeed40515d88a25a526b"
@@ -318,13 +313,13 @@ packages:
     source: hosted
     version: "4.0.0"
   get_it:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: get_it
-      sha256: f126a3e286b7f5b578bf436d5592968706c4c1de28a228b870ce375d9f743103
+      sha256: d85128a5dae4ea777324730dc65edd9c9f43155c109d5cc0a69cab74139fbac1
       url: "https://pub.dev"
     source: hosted
-    version: "8.0.3"
+    version: "7.7.0"
   glob:
     dependency: transitive
     description:
@@ -365,8 +360,24 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  injectable:
+    dependency: "direct main"
+    description:
+      name: injectable
+      sha256: f71eb879124ed286cbd2210337b91ff5f345f146187c1f1891c172e0ac06443a
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.4"
+  injectable_generator:
+    dependency: "direct main"
+    description:
+      name: injectable_generator
+      sha256: "1f5bbe44f06cf15dc55b9797a8df8b4d22b0471f6a7d7f79f4c651393b130a9d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.5"
   internet_connection_checker:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: internet_connection_checker
       sha256: ee08f13d8b13b978affe226e9274ca3ba7a9bed07c9479e8ae245f785b7a488a
@@ -437,14 +448,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
-  macros:
-    dependency: transitive
-    description:
-      name: macros
-      sha256: "0acaed5d6b7eab89f63350bccd82119e6c602df0f391260d0e32b5e23db79536"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.2-main.4"
   matcher:
     dependency: transitive
     description:
@@ -598,7 +601,7 @@ packages:
     source: hosted
     version: "4.1.0"
   shared_preferences:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: shared_preferences
       sha256: "846849e3e9b68f3ef4b60c60cf4b3e02e9321bc7f4d8c4692cf87ffa82fc8a3a"

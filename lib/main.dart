@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart';
-import 'package:test_app/feature/presentation/pages/weathet_page.dart';
+import 'package:test_app/feature/presentation/pages/weather_page.dart';
 import 'package:test_app/locator_service.dart';
 
 void main() async {
@@ -19,15 +19,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ForecastBloc>(create: (context) => sl<ForecastBloc>()),
+        BlocProvider<ForecastBloc>(create: (context) => getIt<ForecastBloc>()),
         BlocProvider<LocationSearchBloc>(
-            create: (context) => sl<LocationSearchBloc>()),
+            create: (context) => getIt<LocationSearchBloc>()),
       ],
       child: MaterialApp(
-        theme: ThemeData.dark().copyWith(
-          dialogBackgroundColor: Colors.black,
-          scaffoldBackgroundColor: Colors.grey,
-        ),
         home: HomePage(),
       ),
     );

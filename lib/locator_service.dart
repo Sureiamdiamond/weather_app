@@ -12,37 +12,40 @@ import 'package:test_app/feature/domain/usecases/search_location.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart';
 
-final sl = GetIt.instance;
+final GetIt getIt = GetIt.instance;
 
 Future<void> init() async {
-  // Bloc
-  sl.registerFactory(
-    () => ForecastBloc(getForecast: sl()),
-  );
-  sl.registerFactory(
-    () => LocationSearchBloc(searchLocation: sl()),
-  );
-
-  //UseCases
-  sl.registerLazySingleton(() => GetForecast(sl()));
-  sl.registerLazySingleton(() => SearchLocation(sl()));
+  getIt.registerLazySingleton<http.Client>(() => http.Client());
 
   //Repository
-  sl.registerLazySingleton<ForecastRepo>(() => ForecastRepository(
-      remoteDataSource: sl(), localDataSource: sl(), networkInfo: sl()));
+  getIt.registerLazySingleton<ForecastRemoteData>(
+      () => ForecastRemoteDataSource(client: getIt<http.Client>()));
 
-  sl.registerLazySingleton<ForecastRemoteData>(
-      () => ForecastRemoteDataSource(client: http.Client()));
+  getIt.registerLazySingleton<ForecastLocalData>(() =>
+      ForecastLocalDataSource(sharedPreferences: getIt<SharedPreferences>()));
 
-  sl.registerLazySingleton<ForecastLocalData>(
-      () => ForecastLocalDataSource(sharedPreferences: sl()));
+  getIt.registerLazySingleton<ForecastRepo>(() => ForecastRepository(
+      remoteDataSource: getIt<ForecastRemoteData>(),
+      localDataSource: getIt<ForecastLocalData>(),
+      networkInfo: getIt<NetworkInfo>()));
+
+  //UseCases
+  getIt.registerLazySingleton(() => GetForecast(getIt<ForecastRepo>()));
+  getIt.registerLazySingleton(() => SearchLocation(getIt<ForecastRepo>()));
 
   //Core
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
+  getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(getIt()));
 
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  sl.registerLazySingleton(() => sharedPreferences);
-  sl.registerLazySingleton(() => http.Client());
-  sl.registerLazySingleton(() => InternetConnectionChecker);
+  getIt.registerLazySingleton(() => sharedPreferences);
+  getIt.registerLazySingleton(() => InternetConnectionChecker.instance);
+
+  // Bloc
+  getIt.registerFactory(
+    () => ForecastBloc(getForecast: getIt<GetForecast>()),
+  );
+  getIt.registerFactory(
+    () => LocationSearchBloc(searchLocation: getIt<SearchLocation>()),
+  );
 }

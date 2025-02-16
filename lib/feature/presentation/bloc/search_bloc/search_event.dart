@@ -8,7 +8,7 @@ abstract class LocationSearchEvent extends Equatable {
 }
 
 class SearchLocations extends LocationSearchEvent {
-  final String locationQuery;
+  final String location;
 
-  SearchLocations({required this.locationQuery});
+  SearchLocations({required this.location});
 }

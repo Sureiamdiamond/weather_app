@@ -9,7 +9,7 @@ abstract class ForecastLocalData {
   Future<void> forecastToCache(GeneralForecastModel forecast);
 }
 
-const CACHED_FORECAST = 'CACHED_PERSONS';
+const CACHED_FORECAST = 'CACHED_FORECAST';
 
 class ForecastLocalDataSource implements ForecastLocalData {
   final SharedPreferences sharedPreferences;
