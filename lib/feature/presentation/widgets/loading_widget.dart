@@ -26,18 +26,19 @@ class _LoadingIconState extends State<LoadingIcon>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
+    return Center(
+        child: AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
         return Transform.rotate(
           angle: _controller.value * 2.0 * 3.14159, // 2π для полного оборота
-          child: Icon(
+          child: const Icon(
             Icons.refresh,
             size: 100.0,
             color: Colors.blue,
           ),
         );
       },
-    );
+    ));
   }
 }

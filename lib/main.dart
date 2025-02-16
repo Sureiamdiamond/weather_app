@@ -4,6 +4,7 @@ import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_bloc.d
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart';
 import 'package:test_app/feature/presentation/pages/weather_page.dart';
 import 'package:test_app/locator_service.dart';
+import 'package:geolocator/geolocator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
