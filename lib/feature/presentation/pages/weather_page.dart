@@ -9,17 +9,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.search),
-            color: Colors.black,
-            iconSize: 35,
-          )
-        ],
-      ),
-      body: Forecast(),
+      body: ForecastWidget(),
     );
   }
 }

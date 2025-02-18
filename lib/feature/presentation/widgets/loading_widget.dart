@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoadingIcon extends StatefulWidget {
   @override
@@ -32,10 +33,10 @@ class _LoadingIconState extends State<LoadingIcon>
       builder: (context, child) {
         return Transform.rotate(
           angle: _controller.value * 2.0 * 3.14159, // 2π для полного оборота
-          child: const Icon(
-            Icons.refresh,
-            size: 100.0,
-            color: Colors.blue,
+          child: const FaIcon(
+            FontAwesomeIcons.spinner, // Иконка загрузки
+            size: 50,
+            color: Colors.white,
           ),
         );
       },

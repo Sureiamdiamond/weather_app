@@ -1,114 +1,70 @@
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+/*import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 
-class CityFinderWidget extends StatefulWidget {
-  final double latitude;
-  final double longitude;
-
-  CityFinderWidget({required this.latitude, required this.longitude});
-
+class LocationWidget extends StatefulWidget {
   @override
-  _CityFinderWidgetState createState() => _CityFinderWidgetState();
+  _LocationWidgetState createState() => _LocationWidgetState();
 }
 
-class _CityFinderWidgetState extends State<CityFinderWidget> {
-  String _city = 'Нажмите кнопку, чтобы найти город';
+class _LocationWidgetState extends State<LocationWidget> {
+  String _locationMessage = "Fetching location...";
+  Location _location = Location();
 
-  Future<void> _findCity() async {
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(widget.latitude, widget.longitude);
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks[0];
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    // Проверка, включена ли служба геолокации
+    _serviceEnabled = await _location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await _location.requestService();
+      if (!_serviceEnabled) {
         setState(() {
-          _city = place.locality ?? 'Город не найден';
+          _locationMessage = "Location services are disabled.";
         });
-      } else {
-        setState(() {
-          _city = 'Город не найден';
-        });
+        return;
       }
-    } catch (e) {
-      setState(() {
-        _city = 'Ошибка: $e';
-      });
     }
+
+    // Проверка разрешений
+    _permissionGranted = await _location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        setState(() {
+          _locationMessage = "Location permissions are denied.";
+        });
+        return;
+      }
+    }
+
+    // Получение текущего местоположения
+    LocationData locationData = await _location.getLocation();
+    setState(() {
+      _locationMessage =
+          "Latitude: ${locationData.latitude}, Longitude: ${locationData.longitude}";
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Найти город по координатам'),
+        title: Text("Location Widget"),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _city,
-              style: TextStyle(fontSize: 24),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _findCity,
-              child: Text('Найти город'),
-            ),
-          ],
+        child: Text(
+          _locationMessage,
+          style: TextStyle(fontSize: 20),
         ),
       ),
     );
   }
 }
-
-class LocationWidget extends StatelessWidget {
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied.');
-    }
-
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Position>(
-      future: _determinePosition(),
-      builder: (BuildContext context, AsyncSnapshot<Position> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // Show a loading indicator while waiting
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}'); // Show error message
-        } else if (snapshot.hasData) {
-          Position position = snapshot.data!;
-          return CityFinderWidget(
-            latitude: position.latitude, // Пример: широта Москвы
-            longitude: position.altitude, // Пример: долгота Москвы
-          );
-        } else {
-          return Text('No data available');
-        }
-      },
-    );
-  }
-}
+*/

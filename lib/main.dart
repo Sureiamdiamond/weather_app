@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart';
 import 'package:test_app/feature/presentation/pages/weather_page.dart';
+import 'package:test_app/feature/presentation/widgets/forecast_widget.dart';
 import 'package:test_app/locator_service.dart';
-import 'package:geolocator/geolocator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<LocationSearchBloc>(
             create: (context) => getIt<LocationSearchBloc>()),
       ],
-      child: MaterialApp(
+      child: const MaterialApp(
         home: HomePage(),
       ),
     );
