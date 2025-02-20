@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_event.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_state.dart';
+import 'package:test_app/feature/presentation/pages/search_page.dart';
 import 'package:test_app/feature/presentation/widgets/loading_widget.dart';
 import 'package:weather_icons/weather_icons.dart';
 
@@ -42,7 +43,14 @@ class _ForecastWidgetState extends State<ForecastWidget> {
               ),
               actions: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchPage()),
+                    );
+                    // Обработка результата, если необходимо
+                    if (result != null) {}
+                  },
                   icon: Icon(Icons.search),
                   color: Colors.white,
                   iconSize: 35,
