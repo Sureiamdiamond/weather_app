@@ -339,7 +339,7 @@ Color? _getBackgroundColor(String description, int isDay) {
         description.contains("overcast") ||
         description.contains("mist") ||
         description.contains("fog")) {
-      return const Color.fromARGB(255, 150, 143, 143);
+      return const Color.fromARGB(255, 81, 73, 73);
     } else if (description.contains("rain") ||
         description.contains("drizzle") ||
         description.contains("thundery")) {

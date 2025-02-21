@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:test_app/feature/domain/entities/location_entity.dart';
+import 'package:test_app/feature/domain/entities/search_location_entity.dart';
 
 abstract class LocationSearchState extends Equatable {
   const LocationSearchState();
@@ -13,7 +13,7 @@ class LocationEmpty extends LocationSearchState {}
 class LocationLoading extends LocationSearchState {}
 
 class LocationLoaded extends LocationSearchState {
-  final List<LocationEntity> locations;
+  final List<SearchLocationEntity> locations;
 
   LocationLoaded({required this.locations});
 

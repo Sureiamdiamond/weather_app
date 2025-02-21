@@ -5,7 +5,7 @@ import 'package:test_app/core/platform/network_info.dart';
 import 'package:test_app/feature/data/datasources/forecast_local_data.dart';
 import 'package:test_app/feature/data/datasources/forecast_remote_data.dart';
 import 'package:test_app/feature/domain/entities/forecast_entity.dart';
-import 'package:test_app/feature/domain/entities/location_entity.dart';
+import 'package:test_app/feature/domain/entities/search_location_entity.dart';
 import 'package:test_app/feature/domain/repositories/forecast_repo.dart';
 
 class ForecastRepository implements ForecastRepo {
@@ -41,7 +41,7 @@ class ForecastRepository implements ForecastRepo {
   }
 
   @override
-  Future<Either<Failure, List<LocationEntity>>> searchForecast(
+  Future<Either<Failure, List<SearchLocationEntity>>> searchForecast(
       String location) async {
     if (await networkInfo.isConnected) {
       try {

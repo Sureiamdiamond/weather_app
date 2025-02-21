@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_event.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_state.dart';
 import 'package:test_app/feature/presentation/widgets/loading_widget.dart';
 
 class SearchPage extends StatelessWidget {
+  Logger logger = Logger();
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -35,6 +37,7 @@ class SearchPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   final location = _controller.text;
+                  logger.i("User input: ${location}");
                   if (location.isNotEmpty) {
                     context
                         .read<LocationSearchBloc>()
@@ -52,7 +55,7 @@ class SearchPage extends StatelessWidget {
                     return Expanded(
                       child: ListView.builder(
                         itemCount: state.locations.length,
-                        itemBuilder: (context, index) {
+                        itemBuilder: (context, int index) {
                           final location = state.locations[index];
                           return ListTile(
                             title: Text(location.name ?? ""),

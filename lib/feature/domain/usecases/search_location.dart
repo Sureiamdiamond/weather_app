@@ -3,15 +3,16 @@ import 'package:equatable/equatable.dart';
 import 'package:test_app/core/error/failure.dart';
 import 'package:test_app/core/usecases/usecase.dart';
 import 'package:test_app/feature/domain/entities/location_entity.dart';
+import 'package:test_app/feature/domain/entities/search_location_entity.dart';
 import 'package:test_app/feature/domain/repositories/forecast_repo.dart';
 
 class SearchLocation
-    extends UseCase<List<LocationEntity>, SearchLocationParams> {
+    extends UseCase<List<SearchLocationEntity>, SearchLocationParams> {
   final ForecastRepo forecastRepo;
 
   SearchLocation(this.forecastRepo);
 
-  Future<Either<Failure, List<LocationEntity>>> call(
+  Future<Either<Failure, List<SearchLocationEntity>>> call(
       SearchLocationParams params) async {
     return await forecastRepo.searchForecast(params.location);
   }
