@@ -173,7 +173,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
+                            padding: const EdgeInsets.only(right: 14.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
@@ -427,8 +427,9 @@ Color? _getBackgroundColor(String description, int isDay) {
     } else if (description.contains("cloudly") ||
         description.contains("overcast") ||
         description.contains("mist") ||
+        description.contains("cloud") ||
         description.contains("fog")) {
-      return const Color.fromARGB(255, 81, 73, 73);
+      return const Color.fromARGB(255, 168, 162, 162);
     } else if (description.contains("rain") ||
         description.contains("drizzle") ||
         description.contains("thundery")) {
