@@ -1,6 +1,8 @@
 import 'package:animated_emoji/animated_emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_event.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_state.dart';
@@ -14,14 +16,37 @@ class ForecastWidget extends StatefulWidget {
 }
 
 class _ForecastWidgetState extends State<ForecastWidget> {
+  String location = 'Moscow';
+  Logger logger = Logger();
+
+  void _fetchForecast() {
+    BlocProvider.of<ForecastBloc>(context)
+        .add(GeneralForecast(location: location, days: 7));
+  }
+
+  Future<void> _loadLocation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      location =
+          prefs.getString('location') ?? 'Moscow'; // Значение по умолчанию
+    });
+    _fetchForecast(); // Запрашиваем прогноз погоды
+  }
+
+  Future<void> _saveLocation(String newLocation) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        'location', newLocation); // Сохраняем новое местоположение
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocation();
+  }
+
   @override
   Widget build(BuildContext context) {
-    String location = 'Moscow';
-    int days = 7;
-
-    BlocProvider.of<ForecastBloc>(context)
-        .add(GeneralForecast(location: location, days: days));
-
     return BlocBuilder<ForecastBloc, ForecastState>(
       builder: (context, state) {
         if (state is ForecastLoading) {
@@ -29,7 +54,7 @@ class _ForecastWidgetState extends State<ForecastWidget> {
         } else if (state is ForecastLoaded) {
           final forecast = state.forecast;
           final Color? backColor = _getBackgroundColor(
-              forecast.current?.condition?.text ?? "",
+              forecast.current?.condition?.text?.toLowerCase() ?? "sunny",
               forecast.current?.isday ?? 2);
           String dayName = _getWeekDay(forecast.location?.localtime ?? "");
           return Scaffold(
@@ -48,8 +73,13 @@ class _ForecastWidgetState extends State<ForecastWidget> {
                       context,
                       MaterialPageRoute(builder: (context) => SearchPage()),
                     );
-                    // Обработка результата, если необходимо
-                    if (result != null) {}
+                    if (result != null) {
+                      setState(() {
+                        location = result; // Обновляем местоположение
+                      });
+                      await _saveLocation(result);
+                      _loadLocation();
+                    }
                   },
                   icon: Icon(Icons.search),
                   color: Colors.white,
@@ -120,14 +150,15 @@ class _ForecastWidgetState extends State<ForecastWidget> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 45.0),
-                                  child: Image.network(
-                                      "https:${forecast.current?.condition?.icon}",
+                                    padding: const EdgeInsets.only(left: 45.0),
+                                    child: SizedBox(
                                       width: 100,
                                       height: 100,
-                                      fit: BoxFit.contain,
-                                      filterQuality: FilterQuality.high),
-                                ),
+                                      child: Image.network(
+                                          "https:${forecast.current?.condition?.icon}",
+                                          fit: BoxFit.contain,
+                                          filterQuality: FilterQuality.high),
+                                    )),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 60.0),
                                   child: Text(
@@ -331,10 +362,9 @@ Widget _showErrorText(String message) {
 }
 
 Color? _getBackgroundColor(String description, int isDay) {
-  // Определяем цвет фона в зависимости от погоды и времени суток
   if (isDay == 1) {
     if (description.contains("sunny")) {
-      return Colors.lightBlue;
+      return Colors.blue;
     } else if (description.contains("cloudly") ||
         description.contains("overcast") ||
         description.contains("mist") ||
