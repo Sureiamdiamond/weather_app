@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoadingIcon extends StatefulWidget {
+  const LoadingIcon({super.key});
+
   @override
   _LoadingIconState createState() => _LoadingIconState();
 }

@@ -49,6 +49,8 @@ dependencies:
   weather_icons: ^3.0.0
   logger: ^2.5.0
   font_awesome_flutter: ^10.8.0
+  go_router: ^14.8.0
+  animations: ^2.0.11
 
 dev_dependencies:
   flutter_test:
