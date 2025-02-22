@@ -39,10 +39,12 @@ samples, guidance on mobile development, and a full API reference.
   </details>
   
 ## Screenshots
+<p align="center">
+     <img src="https://github.com/user-attachments/assets/2dea9996-c88e-48a5-ab59-d39113d1e9fe" style="width: 200px; height: auto;">
+     <img src="https://github.com/user-attachments/assets/e30e5a1d-2aa9-40a8-ba0b-af9c2dd70d08" style="width: 200px; height: auto;">
+     <img src="https://github.com/user-attachments/assets/64c53869-18d7-4386-9c96-c3e0a07e023b"  style="width: 200px; height: auto;">
+     <img src="https://github.com/user-attachments/assets/99f7016d-2abb-4886-a9d5-fed93d784956" style="width: 200px; height: auto;">
+</p>
 
-Welcome Page               |  Login Page               | Signup Page               |  Forgot Password Page
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![](https://github.com/user-attachments/assets/aa393a80-1870-40bb-b108-c53b99924f2c)|![]
-(https://github.com/user-attachments/assets/ac668db4-02f7-463d-95b6-2f9e0117628e)|![]
-(https://github.com/user-attachments/assets/cdfabfdc-eb2c-432d-a067-decb0ee0dffa)|![]
-(https://github.com/user-attachments/assets/66529758-93cf-430e-a1df-54ebb3c31700)
+
+
