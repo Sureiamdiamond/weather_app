@@ -41,6 +41,7 @@ samples, guidance on mobile development, and a full API reference.
 
 Welcome Page               |  Login Page               | Signup Page               |  Forgot Password Page
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![](https://github.com/user-attachments/assets/aa393a80-1870-40bb-b108-c53b99924f2c)|![](https://github.com/user-attachments/assets/ac668db4-02f7-463d-95b6-2f9e0117628e)|![]
+![](https://github.com/user-attachments/assets/aa393a80-1870-40bb-b108-c53b99924f2c)|![]
+(https://github.com/user-attachments/assets/ac668db4-02f7-463d-95b6-2f9e0117628e)|![]
 (https://github.com/user-attachments/assets/cdfabfdc-eb2c-432d-a067-decb0ee0dffa)|![]
 (https://github.com/user-attachments/assets/66529758-93cf-430e-a1df-54ebb3c31700)
