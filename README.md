@@ -36,7 +36,8 @@ samples, guidance on mobile development, and a full API reference.
 * [font_awesome_flutter](https://pub.dev/packages/font_awesome_flutter)
 * [go_router](https://pub.dev/packages/go_router)
 * [animations](https://pub.dev/packages/animations)
-* 
+  </details>
+  
 ## Screenshots
 
 Welcome Page               |  Login Page               | Signup Page               |  Forgot Password Page
