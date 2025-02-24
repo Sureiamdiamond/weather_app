@@ -201,9 +201,19 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                 ?
                             SizedBox(child: Image.asset('assets/images/thunder.png'))
                                 :
-                            Text("data"),
+                            Center(child: Column(
+                              children: [
+                                SizedBox(height: 30,),
+                                Text(forecast.current!.condition!.text??"" , style: TextStyle(
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'SF',
+                                  color: Colors.white,
+                                )),
+                              ],
+                            )),
                           ),
-
+                          Text(forecast.location?.localtime?.split(" ")[1]?? "" , style: AppTextStyles.lightTexts,),
                           Text(
                             '${forecast.current?.tempc?.toInt() ?? '--'}°',
                             style: AppTextStyles.temperature,
