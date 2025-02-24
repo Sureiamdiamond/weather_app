@@ -21,7 +21,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 239, 233, 233),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 239, 233, 233),
+        backgroundColor: const Color.fromARGB(255, 239, 231, 233),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context, null);
