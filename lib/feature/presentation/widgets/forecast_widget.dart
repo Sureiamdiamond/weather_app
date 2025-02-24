@@ -179,32 +179,36 @@ class _ForecastWidgetState extends State<ForecastWidget>
                             height: 200,
                             child: (forecast.current!.condition!.text!.toLowerCase().contains("cloud"))
                                 ?
-                           SizedBox(child: Image.asset('assets/images/cloudy.png'))
+                           SizedBox(child: Image.asset('assets/images/day_clouds.png'))
                                 :
                             (forecast.current!.condition!.text!.toLowerCase().contains("rain"))
                                 ?
-                            SizedBox(child: Image.asset('assets/images/rain.png'))
+                            SizedBox(child: Image.asset('assets/images/day_rain.png'))
                                 :
                             (forecast.current!.condition!.text!.toLowerCase().contains("sun"))
                                 ?
-                            SizedBox(child: Image.asset('assets/images/sun.png'))
+                            SizedBox(child: Image.asset('assets/images/Sun.png'))
                                 :
                             (forecast.current!.condition!.text!.toLowerCase().contains("wind"))
                                 ?
-                            SizedBox(child: Image.asset('assets/images/winddy.png'))
+                            SizedBox(child: Image.asset('assets/images/day_wind.png'))
                                 :
                             (forecast.current!.condition!.text!.toLowerCase().contains("snow"))
                                 ?
-                            SizedBox(child: Image.asset('assets/images/snow.png'))
+                            SizedBox(child: Image.asset('assets/images/day_snow.png'))
                                 :
                             (forecast.current!.condition!.text!.toLowerCase().contains("thunder"))
                                 ?
-                            SizedBox(child: Image.asset('assets/images/thunder.png'))
+                            SizedBox(child: Image.asset('assets/images/day_storm_thunder.png.png'))
                                 :
+                            (forecast.current!.condition!.text!.toLowerCase().contains("storm"))
+                                ?
+                            SizedBox(child: Image.asset('assets/images/day_storm_thunder.png.png'))
+                            :
                             Center(child: Column(
                               children: [
-                                SizedBox(height: 30,),
-                                Text(forecast.current!.condition!.text??"" , style: TextStyle(
+                                const SizedBox(height: 30,),
+                                Text(forecast.current!.condition!.text??"" , style: const TextStyle(
                                   fontSize: 35,
                                   fontWeight: FontWeight.w300,
                                   fontFamily: 'SF',
@@ -218,7 +222,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                             '${forecast.current?.tempc?.toInt() ?? '--'}°',
                             style: AppTextStyles.temperature,
                           ),
-                           Text("Precipitations" , style: AppTextStyles.lightTexts),
+                           const Text("Precipitations" , style: AppTextStyles.lightTexts),
                             Text(
                               'Min: ${forecast.forecast?.forecastday?.first?.day?.mintempc?.toInt()}°   Max: ${forecast.forecast?.forecastday?.first?.day?.maxtempc?.toInt()  }° ',style: AppTextStyles.lightTexts),
 
@@ -234,11 +238,11 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                   borderRadius: BorderRadius.all(Radius.circular(20))
                               ),
                               child:  Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Row(children: [
-                                    SvgPicture.asset('assets/images/rain.svg'),
-                                    SizedBox(width: 4,),
+                                    SvgPicture.asset('assets/images/Union.svg' , height: 16,color: Colors.white,),
+                                    const SizedBox(width: 5,),
                                     Text(
                                       '${forecast.current?.cloud.toString()}%',
                                       style: AppTextStyles.subheading,
@@ -249,8 +253,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                   Row(
                                     children: [
 
-
-                                       SvgPicture.asset('assets/images/humidity.svg') ,
+                                      SvgPicture.asset('assets/images/humidity_bar.svg') ,
                                       Text(
                                         '${forecast.current?.humidity.toString()}%',
                                         style: AppTextStyles.subheading,
@@ -259,13 +262,14 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                   ),
                                   Row(
                                     children: [
-                                      SvgPicture.asset('assets/images/wind.svg'),
+                                      SvgPicture.asset('assets/images/wind_bar.svg'),
+                                      const SizedBox(width: 2,),
                                       Text(
                                         '${forecast.current?.windkph.toString()}',
                                         style: AppTextStyles.subheading,
                                       ),
-                                      SizedBox(width: 4,),
-                                      Text(
+                                      const SizedBox(width: 4,),
+                                      const Text(
                                         'km/h',
                                         style: AppTextStyles.format,
                                       ),
@@ -276,7 +280,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                             ),
                           ),
 
-                          SizedBox(height: 20,),
+                          const SizedBox(height: 20,),
                           Padding(
                             padding: const EdgeInsets.only(left: 25 , right:25),
                             child: Container(
@@ -286,10 +290,10 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                   color: Color.fromARGB(56, 1, 17, 28),
                                   borderRadius: BorderRadius.all(Radius.circular(20))
                               ),
-                              child: Column(),
+                              child: const Column(),
                             ),
                           ),
-                          SizedBox(height: 20,),
+                          const SizedBox(height: 20,),
                           Padding(
                             padding: const EdgeInsets.only(left: 25 , right:25),
                             child: Container(
@@ -299,7 +303,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                   color: Color.fromARGB(56, 1, 17, 28),
                                   borderRadius: BorderRadius.all(Radius.circular(20))
                               ),
-                              child: Column(),
+                              child: const Column(),
                             ),
                           )
 
@@ -535,9 +539,9 @@ class _ForecastWidgetState extends State<ForecastWidget>
 }
 
 String _getWeekDay(String localtime) {
-  int year = int.parse(localtime.substring(0, 4) ?? '0');
-  int month = int.parse(localtime.substring(5, 7) ?? '0');
-  int day = int.parse(localtime.substring(8, 10) ?? '0');
+  int year = int.parse(localtime.substring(0, 4));
+  int month = int.parse(localtime.substring(5, 7));
+  int day = int.parse(localtime.substring(8, 10));
 
   DateTime date = DateTime(year, month, day);
 
@@ -623,17 +627,17 @@ Gradient _getBackgroundGradient(String description, int isDay) {
     }
   } else {
     return const LinearGradient(
-      colors: [Color.fromARGB(255, 4, 56, 99), Colors.black],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
+      colors: [Color.fromARGB(255, 1, 37, 66),Color.fromARGB(255, 4, 83, 149)],
+      begin: Alignment.bottomRight,
+      end: Alignment.topLeft,
     );
   }
 
 
   return const LinearGradient(
     colors: [Colors.blueGrey, Colors.black],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+    begin: Alignment.bottomRight,
+    end: Alignment.topLeft,
   );
 }
 
