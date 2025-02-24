@@ -5,6 +5,8 @@ import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart'
 import 'package:test_app/feature/presentation/pages/weather_page.dart';
 import 'package:test_app/locator_service.dart';
 
+import 'feature/presentation/pages/test_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
@@ -30,6 +32,7 @@ class MyApp extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
         home: const HomePage(),
+        // home: const test(),
       ),
     );
   }

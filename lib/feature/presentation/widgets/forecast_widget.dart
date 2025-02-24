@@ -1,6 +1,8 @@
 import 'package:animated_emoji/animated_emoji.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_bloc.dart';
@@ -17,7 +19,7 @@ class ForecastWidget extends StatefulWidget {
 
 class _ForecastWidgetState extends State<ForecastWidget>
     with SingleTickerProviderStateMixin {
-  String location = 'Moscow';
+  String location = 'Tehran';
   Logger logger = Logger();
 
   late AnimationController _fadeController;
@@ -33,15 +35,15 @@ class _ForecastWidgetState extends State<ForecastWidget>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       location =
-          prefs.getString('location') ?? 'Moscow'; // Значение по умолчанию
+          prefs.getString('location') ?? 'Tehran';
     });
-    _fetchForecast(); // Запрашиваем прогноз погоды
+    _fetchForecast();
   }
 
   Future<void> _saveLocation(String newLocation) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-        'location', newLocation); // Сохраняем новое местоположение
+        'location', newLocation);
   }
 
   @override
@@ -76,6 +78,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
 
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<ForecastBloc, ForecastState>(
       builder: (context, state) {
         if (state is ForecastLoading) {
@@ -83,275 +86,426 @@ class _ForecastWidgetState extends State<ForecastWidget>
             color: Colors.lightBlue,
             child: FadeTransition(
               opacity: _loadingFadeAnimation,
-              child: LoadingIcon(),
+              child: const LoadingIcon(),
             ),
           );
         } else if (state is ForecastLoaded) {
+
           _fadeController.forward();
 
           final forecast = state.forecast;
-          final Color? backColor = _getBackgroundColor(
+          final Gradient backColor = _getBackgroundGradient(
               forecast.current?.condition?.text?.toLowerCase() ?? "sunny",
-              forecast.current?.isday ?? 2);
+              forecast.current?.isday ?? 2
+          );
+
           String dayName = _getWeekDay(forecast.location?.localtime ?? "");
           return FadeTransition(
             opacity: _fadeAnimation,
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: backColor,
-                leading: IconButton(
-                  icon: Icon(Icons.menu),
-                  color: Colors.white,
-                  iconSize: 35,
-                  onPressed: () {},
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: () async {
-                      final result = await Navigator.of(context).push(
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) {
-                            return SearchPage();
-                          },
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            const begin = Offset(0.0, 1.0);
-                            const end = Offset.zero;
-                            const curve = Curves.easeInOut;
-                            var tween = Tween(begin: begin, end: end)
-                                .chain(CurveTween(curve: curve));
-                            var offsetAnimation = animation.drive(tween);
-
-                            return SlideTransition(
-                              position: offsetAnimation,
-                              child: child,
-                            );
-                          },
-                        ),
-                      );
-                      if (result != null) {
-                        setState(() {
-                          location = result; // Обновляем местоположение
-                        });
-                        await _saveLocation(result);
-                        _loadLocation();
-                      }
-                    },
-                    icon: Icon(Icons.search),
-                    color: Colors.white,
-                    iconSize: 35,
-                  )
-                ],
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: backColor,
               ),
-              body: Container(
-                color: backColor,
-                padding: EdgeInsets.all(5.0),
-                child: Column(children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.white, // Цвет рамки
-                        width: 2.0, // Ширина рамки
+              child: Scaffold(
+                body: Container(
+                  decoration: BoxDecoration(
+                    gradient: backColor,
+                  ),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.zero,
+                    child: Column(children: [
+                      const SizedBox(height: 50,),
+                      Padding(
+                        padding: const EdgeInsets.only(left : 15 , right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.location_on_outlined),
+                                  color: Colors.white,
+                                  iconSize: 35,
+                                  onPressed: () {},
+                                ),
+                                Text(forecast.location?.name ?? "" , style: AppTextStyles.cityName,)
+                              ],
+                            ),
+                            IconButton(
+                              onPressed: () async {
+                                final result = await Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) {
+                                      return SearchPage();
+                                    },
+                                    transitionsBuilder:
+                                        (context, animation, secondaryAnimation, child) {
+                                      const begin = Offset(0.0, 1.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.easeInOut;
+                                      var tween = Tween(begin: begin, end: end)
+                                          .chain(CurveTween(curve: curve));
+                                      var offsetAnimation = animation.drive(tween);
+
+                                      return SlideTransition(
+                                        position: offsetAnimation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                                if (result != null) {
+                                  setState(() {
+                                    location = result;
+                                  });
+                                  await _saveLocation(result);
+                                  _loadLocation();
+                                }
+                              },
+                              icon: const Icon(CupertinoIcons.search),
+                              color: Colors.white,
+                              iconSize: 35,
+                            )
+                          ],),
                       ),
-                      borderRadius:
-                          BorderRadius.circular(16.0), // Закругленные углы
-                    ),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Column(
+
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(forecast.location?.name ?? "",
-                                    style: AppTextStyles.heading),
-                                Text(forecast.location?.country ?? "",
-                                    style: AppTextStyles.subheading),
-                              ],
-                            ),
+                          //icon condition
+                          SizedBox(
+                            width: 200,
+                            height: 200,
+                            child: (forecast.current!.condition!.text!.toLowerCase().contains("cloud"))
+                                ?
+                           SizedBox(child: Image.asset('assets/images/cloudy.png'))
+                                :
+                            (forecast.current!.condition!.text!.toLowerCase().contains("rain"))
+                                ?
+                            SizedBox(child: Image.asset('assets/images/rain.png'))
+                                :
+                            (forecast.current!.condition!.text!.toLowerCase().contains("sun"))
+                                ?
+                            SizedBox(child: Image.asset('assets/images/sun.png'))
+                                :
+                            (forecast.current!.condition!.text!.toLowerCase().contains("wind"))
+                                ?
+                            SizedBox(child: Image.asset('assets/images/winddy.png'))
+                                :
+                            (forecast.current!.condition!.text!.toLowerCase().contains("snow"))
+                                ?
+                            SizedBox(child: Image.asset('assets/images/snow.png'))
+                                :
+                            (forecast.current!.condition!.text!.toLowerCase().contains("thunder"))
+                                ?
+                            SizedBox(child: Image.asset('assets/images/thunder.png'))
+                                :
+                            Text("data"),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 14.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(dayName, style: AppTextStyles.heading),
-                                Text(forecast.current?.condition?.text ?? "",
-                                    style: AppTextStyles.subheading),
-                              ],
-                            ),
+
+                          Text(
+                            '${forecast.current?.tempc?.toInt() ?? '--'}°',
+                            style: AppTextStyles.temperature,
                           ),
-                        ]),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 5),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.white, // Цвет рамки
-                        width: 2.0, // Ширина рамки
-                      ),
-                      borderRadius:
-                          BorderRadius.circular(16.0), // Закругленные углы
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                           Text("Precipitations" , style: AppTextStyles.lightTexts),
+                            Text(
+                              'Min: ${forecast.forecast?.forecastday?.first?.day?.mintempc?.toInt()}°   Max: ${forecast.forecast?.forecastday?.first?.day?.maxtempc?.toInt()  }° ',style: AppTextStyles.lightTexts),
+
+                          const SizedBox(height: 40,),
+
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25 , right:25),
+                            child: Container(
+                              height: 45,
+                              width: double.infinity,
+                              decoration: const BoxDecoration(
+                                  color: Color.fromARGB(56, 1, 17, 28),
+                                  borderRadius: BorderRadius.all(Radius.circular(20))
+                              ),
+                              child:  Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 45.0),
-                                      child: SizedBox(
-                                        width: 100,
-                                        height: 100,
-                                        child: Image.network(
-                                            "https:${forecast.current?.condition?.icon}",
-                                            fit: BoxFit.contain,
-                                            filterQuality: FilterQuality.high),
-                                      )),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 60.0),
-                                    child: Text(
-                                      '${forecast.current?.tempc?.toInt()}°',
-                                      style: AppTextStyles.temperature,
+                                  Row(children: [
+                                    SvgPicture.asset('assets/images/rain.svg'),
+                                    SizedBox(width: 4,),
+                                    Text(
+                                      '${forecast.current?.cloud.toString()}%',
+                                      style: AppTextStyles.subheading,
                                     ),
+
+
+                                  ],),
+                                  Row(
+                                    children: [
+
+
+                                       SvgPicture.asset('assets/images/humidity.svg') ,
+                                      Text(
+                                        '${forecast.current?.humidity.toString()}%',
+                                        style: AppTextStyles.subheading,
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset('assets/images/wind.svg'),
+                                      Text(
+                                        '${forecast.current?.windkph.toString()}',
+                                        style: AppTextStyles.subheading,
+                                      ),
+                                      SizedBox(width: 4,),
+                                      Text(
+                                        'km/h',
+                                        style: AppTextStyles.format,
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
+                            ),
+                          ),
+
+                          SizedBox(height: 20,),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25 , right:25),
+                            child: Container(
+                              height: 200,
+                              width: double.infinity,
+                              decoration: const BoxDecoration(
+                                  color: Color.fromARGB(56, 1, 17, 28),
+                                  borderRadius: BorderRadius.all(Radius.circular(20))
+                              ),
+                              child: Column(),
+                            ),
+                          ),
+                          SizedBox(height: 20,),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25 , right:25),
+                            child: Container(
+                              height: 150,
+                              width: double.infinity,
+                              decoration: const BoxDecoration(
+                                  color: Color.fromARGB(56, 1, 17, 28),
+                                  borderRadius: BorderRadius.all(Radius.circular(20))
+                              ),
+                              child: Column(),
+                            ),
+                          )
+
+
+                        ],
+                      ),
+                      const SizedBox(height: 150,),
+                      ///
+                      /// ///
+                      ///
+
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2.0,
+                          ),
+                          borderRadius:
+                              BorderRadius.circular(16.0),
+                        ),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
                               Padding(
-                                padding: const EdgeInsets.only(right: 20.0),
+                                padding: const EdgeInsets.only(left: 16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(forecast.location?.name ?? "",
+                                        style: AppTextStyles.heading),
+                                    Text(forecast.location?.country ?? "",
+                                        style: AppTextStyles.subheading),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 14.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Row(
-                                      children: [
-                                        const BoxedIcon(
-                                          WeatherIcons.cloud,
-                                          color: Colors.white,
-                                        ),
-                                        Text(
-                                          '${forecast.current?.cloud.toString()}%' ??
-                                              "",
-                                          style: AppTextStyles.subheading,
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        const BoxedIcon(
-                                          WeatherIcons.humidity,
-                                          color: Colors.white,
-                                        ),
-                                        Text(
-                                          '${forecast.current?.humidity.toString()}%' ??
-                                              "",
-                                          style: AppTextStyles.subheading,
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        const BoxedIcon(
-                                          WeatherIcons.strong_wind,
-                                          color: Colors.white,
-                                        ),
-                                        Text(
-                                          '${forecast.current?.windkph.toString()} kmh' ??
-                                              "",
-                                          style: AppTextStyles.subheading,
-                                        ),
-                                      ],
-                                    ),
+                                    Text(dayName, style: AppTextStyles.heading),
+                                    Text(forecast.current?.condition?.text ?? "",
+                                        style: AppTextStyles.subheading),
                                   ],
                                 ),
-                              )
+                              ),
                             ]),
-                        Padding(
-                          padding: EdgeInsets.only(top: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                      _getWeekDay(
-                                              '${forecast.forecast?.forecastday?[0]?.date} ')
-                                          .substring(0, 3),
-                                      style: AppTextStyles.days),
-                                  Image.network(
-                                      "https:${forecast.forecast?.forecastday?[0]?.day?.condition?.icon}"),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                      _getWeekDay(
-                                              '${forecast.forecast?.forecastday?[1]?.date} ')
-                                          .substring(0, 3),
-                                      style: AppTextStyles.days),
-                                  Image.network(
-                                      "https:${forecast.forecast?.forecastday?[1]?.day?.condition?.icon}"),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                      _getWeekDay(
-                                              '${forecast.forecast?.forecastday?[2]?.date} ')
-                                          .substring(0, 3),
-                                      style: AppTextStyles.days),
-                                  Image.network(
-                                      "https:${forecast.forecast?.forecastday?[2]?.day?.condition?.icon}"),
-                                ],
-                              ),
-                            ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 5),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2.0,
                           ),
+                          borderRadius:
+                              BorderRadius.circular(16.0),
                         ),
-                      ],
-                    ),
+                        child: Column(
+                          children: [
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 45.0),
+                                          child: SizedBox(
+                                            width: 100,
+                                            height: 100,
+                                            child: Image.network(
+                                                "https:${forecast.current?.condition?.icon}",
+                                                fit: BoxFit.contain,
+                                                filterQuality: FilterQuality.high),
+                                          )),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 60.0),
+                                        child: Text(
+                                          '${forecast.current?.tempc?.toInt()}°',
+                                          style: AppTextStyles.temperature,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const BoxedIcon(
+                                              WeatherIcons.cloud,
+                                              color: Colors.white,
+                                            ),
+                                            Text(
+                                              '${forecast.current?.cloud.toString()}%',
+                                              style: AppTextStyles.subheading,
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            const BoxedIcon(
+                                              WeatherIcons.humidity,
+                                              color: Colors.white,
+                                            ),
+                                            Text(
+                                              '${forecast.current?.humidity.toString()}%',
+                                              style: AppTextStyles.subheading,
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            const BoxedIcon(
+                                              WeatherIcons.strong_wind,
+                                              color: Colors.white,
+                                            ),
+                                            Text(
+                                              '${forecast.current?.windkph.toString()} kmh',
+                                              style: AppTextStyles.subheading,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ]),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                          _getWeekDay(
+                                                  '${forecast.forecast?.forecastday?[0]?.date} ')
+                                              .substring(0, 3),
+                                          style: AppTextStyles.days),
+                                      Image.network(
+                                          "https:${forecast.forecast?.forecastday?[0]?.day?.condition?.icon}"),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                          _getWeekDay(
+                                                  '${forecast.forecast?.forecastday?[1]?.date} ')
+                                              .substring(0, 3),
+                                          style: AppTextStyles.days),
+                                      Image.network(
+                                          "https:${forecast.forecast?.forecastday?[1]?.day?.condition?.icon}"),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                          _getWeekDay(
+                                                  '${forecast.forecast?.forecastday?[2]?.date} ')
+                                              .substring(0, 3),
+                                          style: AppTextStyles.days),
+                                      Image.network(
+                                          "https:${forecast.forecast?.forecastday?[2]?.day?.condition?.icon}"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(children: [
+                        const Divider(),
+                        const Text(
+                          "Additional Information",
+                          style: AppTextStyles.heading,
+                        ),
+                        Text(
+                          "Temperature feels like: ${forecast.current?.feelslikec}°C\nPressure: ${forecast.current?.pressuremb} mb\nGust: ${forecast.current?.gustkph} kmh",
+                          style: AppTextStyles.subheading,
+                        ),
+                        const Divider(),
+                        const Text("Astro part", style: AppTextStyles.heading),
+                        Text(
+                          "Sunrise: ${forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? ""}",
+                          style: AppTextStyles.subheading,
+                        ),
+                        Text(
+                          "Sunset: ${forecast.forecast?.forecastday?[0]?.astro?.sunset ?? ""}",
+                          style: AppTextStyles.subheading,
+                        ),
+                        Text(
+                          "Moonrise: ${forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? ""}",
+                          style: AppTextStyles.subheading,
+                        ),
+                        Text(
+                          "Moonset: ${forecast.forecast?.forecastday?[0]?.astro?.moonset ?? ""}",
+                          style: AppTextStyles.subheading,
+                        ),
+                        Text(
+                          'Moon phase: ${forecast.forecast?.forecastday?[0]?.astro?.moonphase ?? ""}',
+                          style: AppTextStyles.subheading,
+                        ),
+                        const SizedBox(height: 50,),
+
+                      ]),
+                    ]),
                   ),
-                  Column(children: [
-                    const Divider(),
-                    const Text(
-                      "Additional Information",
-                      style: AppTextStyles.heading,
-                    ),
-                    Text(
-                      "Temperature feels like: ${forecast.current?.feelslikec}°C\nPressure: ${forecast.current?.pressuremb} mb\nGust: ${forecast.current?.gustkph} kmh",
-                      style: AppTextStyles.subheading,
-                    ),
-                    const Divider(),
-                    const Text("Astro part", style: AppTextStyles.heading),
-                    Text(
-                      "Sunrise: ${forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? ""}",
-                      style: AppTextStyles.subheading,
-                    ),
-                    Text(
-                      "Sunset: ${forecast.forecast?.forecastday?[0]?.astro?.sunset ?? ""}",
-                      style: AppTextStyles.subheading,
-                    ),
-                    Text(
-                      "Moonrise: ${forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? ""}",
-                      style: AppTextStyles.subheading,
-                    ),
-                    Text(
-                      "Moonset: ${forecast.forecast?.forecastday?[0]?.astro?.moonset ?? ""}",
-                      style: AppTextStyles.subheading,
-                    ),
-                    Text(
-                      'Moon phase: ${forecast.forecast?.forecastday?[0]?.astro?.moonphase ?? ""}',
-                      style: AppTextStyles.subheading,
-                    )
-                  ]),
-                ]),
+                ),
               ),
             ),
           );
@@ -371,9 +525,9 @@ class _ForecastWidgetState extends State<ForecastWidget>
 }
 
 String _getWeekDay(String localtime) {
-  int year = int.parse(localtime?.substring(0, 4) ?? '0');
-  int month = int.parse(localtime?.substring(5, 7) ?? '0');
-  int day = int.parse(localtime?.substring(8, 10) ?? '0');
+  int year = int.parse(localtime.substring(0, 4) ?? '0');
+  int month = int.parse(localtime.substring(5, 7) ?? '0');
+  int day = int.parse(localtime.substring(8, 10) ?? '0');
 
   DateTime date = DateTime(year, month, day);
 
@@ -420,29 +574,59 @@ Widget _showErrorText(String message) {
   ));
 }
 
-Color? _getBackgroundColor(String description, int isDay) {
+Gradient _getBackgroundGradient(String description, int isDay) {
   if (isDay == 1) {
     if (description.contains("sunny")) {
-      return Colors.blue;
+      return const LinearGradient(
+        colors: [ Color(0xff2bd6ed),Color(0xff33AADD),Color(0xff00a6ff)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        // stops: [0,47,100]
+      );
     } else if (description.contains("cloudly") ||
         description.contains("overcast") ||
         description.contains("mist") ||
         description.contains("cloud") ||
         description.contains("fog")) {
-      return const Color.fromARGB(255, 168, 162, 162);
+      return  const LinearGradient(
+        colors: [Color.fromARGB(255, 214, 214, 214), Color.fromARGB(255, 90, 87, 87) ,Color.fromARGB(
+            255, 19, 19, 19) ],
+        begin: Alignment.bottomRight,
+        end: Alignment.topLeft,
+      );
     } else if (description.contains("rain") ||
         description.contains("drizzle") ||
         description.contains("thundery")) {
-      return const Color.fromARGB(255, 3, 88, 157);
+      return const LinearGradient(
+        colors: [ Color(0xff061f45),Color(0xff1453c6),Color(0xff0a4ecf)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
     } else if (description.contains("snow") ||
         description.contains("sleet") ||
         description.contains("pellets")) {
-      return const Color.fromARGB(255, 6, 138, 246);
+      return const LinearGradient(
+        colors: [Color.fromARGB(255, 6, 138, 246), Colors.white],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
     }
   } else {
-    return const Color.fromARGB(255, 4, 56, 99); // Ночной фон
+    return const LinearGradient(
+      colors: [Color.fromARGB(255, 4, 56, 99), Colors.black],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
   }
+
+
+  return const LinearGradient(
+    colors: [Colors.blueGrey, Colors.black],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }
+
 
 class AppTextStyles {
   static const TextStyle heading = TextStyle(
@@ -453,19 +637,34 @@ class AppTextStyles {
     color: Colors.white,
   );
 
+  static const TextStyle cityName = TextStyle(
+    fontSize: 35,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'SF',
+    color: Colors.white,
+  );
+
+  static const TextStyle format = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'SF',
+    color: Colors.white,
+  );
+  static const TextStyle lightTexts = TextStyle(
+      fontFamily: 'SF' , fontWeight: FontWeight.w500 , color: Colors.white ,fontSize: 15
+  );
+
   static const TextStyle subheading = TextStyle(
-    fontSize: 23,
-    fontWeight: FontWeight.bold,
-    fontStyle: FontStyle.italic,
-    fontFamily: 'Open Sans',
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
+
+    fontFamily: 'SF',
     color: Colors.white,
   );
 
   static const TextStyle temperature = TextStyle(
-    fontSize: 60,
-    fontWeight: FontWeight.w500,
-    fontStyle: FontStyle.italic,
-    fontFamily: 'Open Sans',
+    fontSize: 95,
+    fontFamily: 'SF',
     color: Colors.white,
   );
 
