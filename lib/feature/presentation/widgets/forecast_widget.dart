@@ -2,6 +2,8 @@ import 'package:animated_emoji/animated_emoji.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,12 +15,16 @@ import 'package:test_app/feature/presentation/widgets/loading_widget.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 class ForecastWidget extends StatefulWidget {
+
+  const ForecastWidget({super.key});
+
   @override
   _ForecastWidgetState createState() => _ForecastWidgetState();
 }
 
 class _ForecastWidgetState extends State<ForecastWidget>
     with SingleTickerProviderStateMixin {
+
   String location = 'Tehran';
   Logger logger = Logger();
 
@@ -83,11 +89,15 @@ class _ForecastWidgetState extends State<ForecastWidget>
   }
 
 
-  
-  
-  
-  
-  
+  String _getDate(String localtime) {
+    String dateName = DateFormat('MMM d').format(DateFormat("yyyy-MM-DD").parse(localtime));
+    return dateName;
+  }
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +109,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
 
         if (state is ForecastLoading) {
 
+
           return Container(
            color: Colors.white,
             child: FadeTransition(
@@ -107,6 +118,16 @@ class _ForecastWidgetState extends State<ForecastWidget>
             ),
           );
         } else if (state is ForecastLoaded) {
+
+
+
+          final List<Map<String, String>> weatherData = [
+            {'temp': '31°C', 'time': '15:00'},
+            {'temp': '30°C', 'time': '16:00'},
+            {'temp': '28°C', 'time': '17:00'},
+            {'temp': '28°C', 'time': '18:00'},
+          ];
+
 
           _fadeController.forward();
 
@@ -132,101 +153,89 @@ class _ForecastWidgetState extends State<ForecastWidget>
                   ),
                   child: SingleChildScrollView(
                     padding: EdgeInsets.zero,
-                    child: Column(children: [
-                      const SizedBox(height: 50,),
-                      Padding(
-                        padding: const EdgeInsets.only(left : 15 , right: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
+                    child: Column(
+                        children: [
+                          const SizedBox(height: 50,),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15 , right: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.location_on_outlined),
+                                      color: Colors.white,
+                                      iconSize: 35,
+                                      onPressed: () {},
+                                    ),
+                                    Text(forecast.location?.name ?? "", style: AppTextStyles.cityName,),
+                                  ],
+                                ),
                                 IconButton(
-                                  icon: const Icon(Icons.location_on_outlined),
+                                  onPressed: () async {
+                                    final result = await Navigator.of(context).push(
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation, secondaryAnimation) {
+                                          return SearchPage();
+                                        },
+                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                          const begin = Offset(0.0, 1.0);
+                                          const end = Offset.zero;
+                                          const curve = Curves.easeInOut;
+                                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                          var offsetAnimation = animation.drive(tween);
+
+                                          return SlideTransition(
+                                            position: offsetAnimation,
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                    if (result != null) {
+                                      setState(() {
+                                        location = result;
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (context) {
+                                            return const Scaffold(
+                                              body: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Center(
+                                                    child: CircularProgressIndicator(color: Colors.black,),
+                                                  ),
+                                                  SizedBox(height: 12,),
+                                                  Text("Loading", style: TextStyle(fontFamily: "SF", fontWeight: FontWeight.bold),)
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      });
+                                      await _saveLocation(result);
+                                      _loadLocation();
+                                      await Future.delayed(const Duration(milliseconds: 5500));
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
+                                  icon: const Icon(CupertinoIcons.search),
                                   color: Colors.white,
                                   iconSize: 35,
-                                  onPressed: () {},
                                 ),
-                                Text(forecast.location?.name ?? "" , style: AppTextStyles.cityName,)
                               ],
                             ),
-                            IconButton(
-                              onPressed: () async {
-
-                                final result = await Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder:
-                                        (context, animation, secondaryAnimation) {
-                                      return SearchPage();
-                                    },
-                                    transitionsBuilder:
-                                        (context, animation, secondaryAnimation, child) {
-                                      const begin = Offset(0.0, 1.0);
-                                      const end = Offset.zero;
-                                      const curve = Curves.easeInOut;
-                                      var tween = Tween(begin: begin, end: end)
-                                          .chain(CurveTween(curve: curve));
-                                      var offsetAnimation = animation.drive(tween);
-
-                                      return SlideTransition(
-                                        position: offsetAnimation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
-                                if (result != null) {
-                                  setState(() {
-                                    
-                                    
-                                    location = result;
-
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false, // Disable dismissing the dialog by tapping outside
-                                      builder: (context) {
-                                        return  const Scaffold(
-                                          body: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Center(
-                                                child: CircularProgressIndicator(color: Colors.black,), // Show loading indicator
-                                              ),
-                                              SizedBox(height: 12,),
-                                              Text("Loading" , style: TextStyle(fontFamily: "SF" , fontWeight: FontWeight.bold),)
-
-                                            ],
-                                          ),
-                                        );
-
-                                      },
-                                    );
-                                  });
-
-                                  await _saveLocation(result);
-                                  _loadLocation();
+                          ),
 
 
-                                  await Future.delayed(const Duration(milliseconds: 5500));
-
-                                  Navigator.of(context).pop();
-
-
-
-                                }
-
-                              },
-                              icon: const Icon(CupertinoIcons.search),
-                              color: Colors.white,
-                              iconSize: 35,
-                            )
-                          ],),
-                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(height: 25),
-                          //icon condition
+
+                          ///icon condition
                           SizedBox(
                             width: 200,
                             height: 200,
@@ -281,6 +290,20 @@ class _ForecastWidgetState extends State<ForecastWidget>
                               );
                             }(),
                           ),
+
+                          ///country and time
+                          // Row(
+                          //   children: [
+                          //
+                          //     Text(forecast.location?.country ?? "", style: AppTextStyles.timeSmall,),
+                          //     const SizedBox(width: 5,),
+                          //     Text(forecast.location?.localtime?.split(" ")[1] ?? "", style: AppTextStyles.timeSmall,),
+                          //   ],
+                          // ),
+
+                          //date and condition
+
+                          /// Days of Week and Conditions
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -293,7 +316,8 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                   style: AppTextStyles.lightTexts),
                             ],
                           ),
-                           // Text(forecast.location?.localtime?.split(" ")[1]?? "" , style: AppTextStyles.lightTexts,),
+
+                          ///Temperature
                           Padding(
                             padding: const EdgeInsets.only(left: 32.0),
                             child: Text(
@@ -301,10 +325,15 @@ class _ForecastWidgetState extends State<ForecastWidget>
                               style: AppTextStyles.temperature,
                             ),
                           ),
-                           const Text("Precipitations" , style: AppTextStyles.lightTexts),
+
+                           ///Ttile and Max Min
+                           const Text(
+                               "Precipitations" , style: AppTextStyles.lightTexts),
                             Text(
                               'Min: ${forecast.forecast?.forecastday?.first?.day?.mintempc?.toInt()}°   Max: ${forecast.forecast?.forecastday?.first?.day?.maxtempc?.toInt()  }° ',style: AppTextStyles.lightTexts),
+
                           const SizedBox(height: 40,),
+                          /// small (first) circular radius container
                           Padding(
                             padding: const EdgeInsets.only(left: 25 , right:25),
                             child: Container(
@@ -356,7 +385,9 @@ class _ForecastWidgetState extends State<ForecastWidget>
                               ),
                             ),
                           ),
+
                           const SizedBox(height: 20,),
+                          /// big (second) circular radius container
                           Padding(
                             padding: const EdgeInsets.only(left: 25 , right:25),
                             child: Container(
@@ -366,10 +397,76 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                   color: Color.fromARGB(56, 1, 17, 28),
                                   borderRadius: BorderRadius.all(Radius.circular(20))
                               ),
-                              child: const Column(),
+                              child:  Column(
+                                children: [
+                                  /// Date
+                                  Padding(
+                                    padding: const EdgeInsets.only(top : 13.0 , left: 15 , right: 15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text("Today" , style: AppTextStyles.today),
+                                        Text(_getDate(forecast.location?.localtime?.split(" ")[0]?? "00:00") , style: AppTextStyles.date,),
+
+
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10,),
+                                  SizedBox(
+                                    height: 140,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: weatherData.length,
+                                      itemBuilder: (context, index) {
+
+                                        return AnimatedContainer(
+                                          duration: const Duration(milliseconds: 300),
+                                          width: 75,
+                                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                                          decoration: BoxDecoration(
+                                            color: Color.fromARGB(18, 3, 15, 25),
+                                            borderRadius: BorderRadius.circular(16),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                weatherData[index]['temp']!,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              const Icon(
+                                                Icons.cloud,
+                                                color: Colors.white70,
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                weatherData[index]['time']!,
+                                                style: const TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+
+                                ],
+                              ),
                             ),
                           ),
+
                           const SizedBox(height: 20,),
+                          /// medium (third) circular radius container
                           Padding(
                             padding: const EdgeInsets.only(left: 25 , right:25),
                             child: Container(
@@ -383,136 +480,33 @@ class _ForecastWidgetState extends State<ForecastWidget>
                             ),
                           )
 
+
                         ],
                       ),
                       const SizedBox(height: 150,),
+
+
+
+
                       ///
                       /// ///
                       ///
+                          /// ///
+                          /// ///
+                          /// /
+                          /// //
+                          ///
+                          ///
+                          ///
+                          ///
+
 
                       Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 2.0,
-                          ),
-                          borderRadius:
-                              BorderRadius.circular(16.0),
-                        ),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(forecast.location?.name ?? "",
-                                        style: AppTextStyles.heading),
-                                    Text(forecast.location?.country ?? "",
-                                        style: AppTextStyles.subheading),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 14.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(dayName, style: AppTextStyles.heading),
-                                    Text(forecast.current?.condition?.text ?? "",
-                                        style: AppTextStyles.subheading),
-                                  ],
-                                ),
-                              ),
-                            ]),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
                         padding: const EdgeInsets.only(top: 5),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 2.0,
-                          ),
-                          borderRadius:
-                              BorderRadius.circular(16.0),
-                        ),
+
                         child: Column(
                           children: [
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 45.0),
-                                          child: SizedBox(
-                                            width: 100,
-                                            height: 100,
-                                            child: Image.network(
-                                                "https:${forecast.current?.condition?.icon}",
-                                                fit: BoxFit.contain,
-                                                filterQuality: FilterQuality.high),
-                                          )),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 60.0),
-                                        child: Text(
-                                          '${forecast.current?.tempc?.toInt()}°',
-                                          style: AppTextStyles.temperature,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 20.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const BoxedIcon(
-                                              WeatherIcons.cloud,
-                                              color: Colors.white,
-                                            ),
-                                            Text(
-                                              '${forecast.current?.cloud.toString()}%',
-                                              style: AppTextStyles.subheading,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            const BoxedIcon(
-                                              WeatherIcons.humidity,
-                                              color: Colors.white,
-                                            ),
-                                            Text(
-                                              '${forecast.current?.humidity.toString()}%',
-                                              style: AppTextStyles.subheading,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            const BoxedIcon(
-                                              WeatherIcons.strong_wind,
-                                              color: Colors.white,
-                                            ),
-                                            Text(
-                                              '${forecast.current?.windkph.toString()} kmh',
-                                              style: AppTextStyles.subheading,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ]),
+
                             Padding(
                               padding: const EdgeInsets.only(top: 20.0),
                               child: Row(
@@ -739,10 +733,32 @@ class AppTextStyles {
     fontFamily: 'SF',
     color: Colors.white,
   );
+
+  static const TextStyle date = TextStyle(
+    fontSize: 21,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'SF',
+    color: Colors.white,
+  );
+
+  static const TextStyle today = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'SF',
+    color: Colors.white,
+  );
+
+
   static const TextStyle lightTexts = TextStyle(
       fontFamily: 'SF' , fontWeight: FontWeight.w500 , color: Colors.white ,fontSize: 15
   );
 
+  static const TextStyle timeSmall = TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'SF',
+    color: Colors.white,
+  );
   static const TextStyle subheading = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w500,
