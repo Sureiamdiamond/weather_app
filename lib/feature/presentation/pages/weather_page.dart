@@ -40,8 +40,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.white,
-        child: FlutterLogo(size: MediaQuery.of(context).size.height));
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Container(
+            color: Colors.white,
+            child: Text("Weather App" , style: TextStyle(fontFamily: 'SF' , fontSize: 20),)),
+      ),
+    );
   }
 }

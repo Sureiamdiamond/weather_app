@@ -76,14 +76,31 @@ class _ForecastWidgetState extends State<ForecastWidget>
     super.dispose();
   }
 
+
+  String _getDayOrNight(String localtime) {
+    int hour = int.parse(localtime.split(" ")[1].split(":")[0]);
+    return (hour >= 2 && hour <= 18) ? "day" : "night";
+  }
+
+
+  
+  
+  
+  
+  
+
   @override
   Widget build(BuildContext context) {
 
+
     return BlocBuilder<ForecastBloc, ForecastState>(
       builder: (context, state) {
+
+
         if (state is ForecastLoading) {
+
           return Container(
-            color: Colors.lightBlue,
+           color: Colors.white,
             child: FadeTransition(
               opacity: _loadingFadeAnimation,
               child: const LoadingIcon(),
@@ -94,6 +111,8 @@ class _ForecastWidgetState extends State<ForecastWidget>
           _fadeController.forward();
 
           final forecast = state.forecast;
+          final String dayOrNight = _getDayOrNight(forecast.location?.localtime ?? "00:00");
+          String condition = forecast.current!.condition!.text!.toLowerCase();
           final Gradient backColor = _getBackgroundGradient(
               forecast.current?.condition?.text?.toLowerCase() ?? "sunny",
               forecast.current?.isday ?? 2
@@ -133,6 +152,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                             ),
                             IconButton(
                               onPressed: () async {
+
                                 final result = await Navigator.of(context).push(
                                   PageRouteBuilder(
                                     pageBuilder:
@@ -157,11 +177,44 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                 );
                                 if (result != null) {
                                   setState(() {
+                                    
+                                    
                                     location = result;
+
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false, // Disable dismissing the dialog by tapping outside
+                                      builder: (context) {
+                                        return  const Scaffold(
+                                          body: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: CircularProgressIndicator(color: Colors.black,), // Show loading indicator
+                                              ),
+                                              SizedBox(height: 12,),
+                                              Text("Loading" , style: TextStyle(fontFamily: "SF" , fontWeight: FontWeight.bold),)
+
+                                            ],
+                                          ),
+                                        );
+
+                                      },
+                                    );
                                   });
+
                                   await _saveLocation(result);
                                   _loadLocation();
+
+
+                                  await Future.delayed(const Duration(milliseconds: 5500));
+
+                                  Navigator.of(context).pop();
+
+
+
                                 }
+
                               },
                               icon: const Icon(CupertinoIcons.search),
                               color: Colors.white,
@@ -170,64 +223,88 @@ class _ForecastWidgetState extends State<ForecastWidget>
                           ],),
                       ),
                       Column(
-
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          const SizedBox(height: 25),
                           //icon condition
                           SizedBox(
                             width: 200,
                             height: 200,
-                            child: (forecast.current!.condition!.text!.toLowerCase().contains("cloud"))
-                                ?
-                           SizedBox(child: Image.asset('assets/images/day_clouds.png'))
-                                :
-                            (forecast.current!.condition!.text!.toLowerCase().contains("rain"))
-                                ?
-                            SizedBox(child: Image.asset('assets/images/day_rain.png'))
-                                :
-                            (forecast.current!.condition!.text!.toLowerCase().contains("sun"))
-                                ?
-                            SizedBox(child: Image.asset('assets/images/Sun.png'))
-                                :
-                            (forecast.current!.condition!.text!.toLowerCase().contains("wind"))
-                                ?
-                            SizedBox(child: Image.asset('assets/images/day_wind.png'))
-                                :
-                            (forecast.current!.condition!.text!.toLowerCase().contains("snow"))
-                                ?
-                            SizedBox(child: Image.asset('assets/images/day_snow.png'))
-                                :
-                            (forecast.current!.condition!.text!.toLowerCase().contains("thunder"))
-                                ?
-                            SizedBox(child: Image.asset('assets/images/day_storm_thunder.png.png'))
-                                :
-                            (forecast.current!.condition!.text!.toLowerCase().contains("storm"))
-                                ?
-                            SizedBox(child: Image.asset('assets/images/day_storm_thunder.png.png'))
-                            :
-                            Center(child: Column(
-                              children: [
-                                const SizedBox(height: 30,),
-                                Text(forecast.current!.condition!.text??"" , style: const TextStyle(
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: 'SF',
-                                  color: Colors.white,
-                                )),
-                              ],
-                            )),
+                            child: () {
+                              // Conditions grouped together
+                              List<String> cloudyConditions = ["cloud", "wind", "overcast", "fog", "mist"];
+                              List<String> rainyConditions = ["rain" , "drizzle"];
+                              List<String> snowyConditions = ["snow" , "sleet" , "pellets"];
+                              List<String> thunderConditions = ["thunder", "storm"];
+                              List<String> clearConditions = ["clear" , "sunny"];
+                              List<String> mistyConditions = ["mist"];
+
+                              if (cloudyConditions.any((c) => condition.contains(c))) {
+                                return dayOrNight == 'day'
+                                    ? Image.asset('assets/images/day_clouds.png')
+                                    : Image.asset('assets/images/night_clouds.png');
+                              } else if (rainyConditions.any((c) => condition.contains(c))) {
+                                return dayOrNight == 'day'
+                                    ? Image.asset('assets/images/day_rain.png')
+                                    : Image.asset('assets/images/night_rain.png');
+                              } else if (snowyConditions.any((c) => condition.contains(c))) {
+                                return dayOrNight == 'day'
+                                    ? Image.asset('assets/images/day_snow.png')
+                                    : Image.asset('assets/images/night_snow.png');
+                              } else if (thunderConditions.any((c) => condition.contains(c))) {
+                                return dayOrNight == 'day'
+                                    ? Image.asset('assets/images/day_storm_thunder.png')
+                                    : Image.asset('assets/images/night_storm_thunder.png');
+                              } else if (clearConditions.any((c) => condition.contains(c))) {
+                                return dayOrNight == 'day'
+                                    ? Image.asset('assets/images/Sun.png')
+                                    : Image.asset('assets/images/Moon.png');
+                              } else if (mistyConditions.any((c) => condition.contains(c))) {
+                                return dayOrNight == 'day'
+                                    ? Image.asset('assets/images/day_wind.png')
+                                    : Image.asset('assets/images/night_wind.png');
+                              }
+
+                              // Default case
+                              return Column(
+                                children: [
+                                  const SizedBox(height: 30),
+                                  Text(
+                                    forecast.current!.condition!.text ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }(),
                           ),
-                          Text(forecast.location?.localtime?.split(" ")[1]?? "" , style: AppTextStyles.lightTexts,),
-                          Text(
-                            '${forecast.current?.tempc?.toInt() ?? '--'}°',
-                            style: AppTextStyles.temperature,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(dayName,style: AppTextStyles.lightTexts),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 5 , right: 5),
+                                child: Text('|',  style: AppTextStyles.lightTexts),
+                              ),
+                              Text(forecast.current?.condition?.text ?? "",
+                                  style: AppTextStyles.lightTexts),
+                            ],
+                          ),
+                           // Text(forecast.location?.localtime?.split(" ")[1]?? "" , style: AppTextStyles.lightTexts,),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 32.0),
+                            child: Text(
+                              '${forecast.current?.tempc?.toInt()?? '--'}°',
+                              style: AppTextStyles.temperature,
+                            ),
                           ),
                            const Text("Precipitations" , style: AppTextStyles.lightTexts),
                             Text(
                               'Min: ${forecast.forecast?.forecastday?.first?.day?.mintempc?.toInt()}°   Max: ${forecast.forecast?.forecastday?.first?.day?.maxtempc?.toInt()  }° ',style: AppTextStyles.lightTexts),
-
                           const SizedBox(height: 40,),
-
                           Padding(
                             padding: const EdgeInsets.only(left: 25 , right:25),
                             child: Container(
@@ -255,7 +332,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
 
                                       SvgPicture.asset('assets/images/humidity_bar.svg') ,
                                       Text(
-                                        '${forecast.current?.humidity.toString()}%',
+                                        '${forecast.current?.humidity.toString()}%'??"",
                                         style: AppTextStyles.subheading,
                                       ),
                                     ],
@@ -279,7 +356,6 @@ class _ForecastWidgetState extends State<ForecastWidget>
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 20,),
                           Padding(
                             padding: const EdgeInsets.only(left: 25 , right:25),
@@ -306,7 +382,6 @@ class _ForecastWidgetState extends State<ForecastWidget>
                               child: const Column(),
                             ),
                           )
-
 
                         ],
                       ),
@@ -677,7 +752,7 @@ class AppTextStyles {
   );
 
   static const TextStyle temperature = TextStyle(
-    fontSize: 95,
+    fontSize: 100,
     fontFamily: 'SF',
     color: Colors.white,
   );

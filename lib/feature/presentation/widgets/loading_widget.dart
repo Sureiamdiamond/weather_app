@@ -16,9 +16,9 @@ class _LoadingIconState extends State<LoadingIcon>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
-    )..repeat(); // Повторяем анимацию бесконечно
+    )..repeat();
   }
 
   @override
@@ -29,19 +29,25 @@ class _LoadingIconState extends State<LoadingIcon>
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Transform.rotate(
-          angle: _controller.value * 2.0 * 3.14159, // 2π для полного оборота
-          child: const FaIcon(
-            FontAwesomeIcons.spinner, // Иконка загрузки
-            size: 50,
-            color: Colors.white,
-          ),
-        );
-      },
-    ));
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) {
+              return Transform.rotate(
+                angle: _controller.value * 2.0 * 3.14159,
+                child:const CircularProgressIndicator( color: Colors.black,)
+              );
+                      },
+                    ),
+              const SizedBox(height: 12),
+              const Text("Loading" , style: TextStyle(fontFamily: "SF" , fontWeight: FontWeight.bold),)
+            ],
+          )),
+    );
   }
 }
