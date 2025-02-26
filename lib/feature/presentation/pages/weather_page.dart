@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
       () => Navigator.of(context).push(
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            return ForecastWidget();
+            return const ForecastWidget();
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             const begin = Offset(0.0, 1.0);
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Container(
             color: Colors.white,
-            child: Text("Weather App" , style: TextStyle(fontFamily: 'SF' , fontSize: 20),)),
+            child: const Text("Weather App" , style: TextStyle(fontFamily: 'SF' , fontSize: 20),)),
       ),
     );
   }

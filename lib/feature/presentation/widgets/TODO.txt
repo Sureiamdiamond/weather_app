@@ -1,0 +1,16 @@
+
+additional  info ---> match the ui
+astro part ---- > match the ui
+
+
+search screen
+bottom of the page have info button
+press on location icon say your location is tehran in iran - local time
+
+
+
+app name ---> Weatherly
+university logo at splash and info screen
+teacher name at splash and info screen
+logo for app
+locale the app persian language?

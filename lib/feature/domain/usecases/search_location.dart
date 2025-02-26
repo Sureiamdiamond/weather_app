@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:test_app/core/error/failure.dart';
 import 'package:test_app/core/usecases/usecase.dart';
-import 'package:test_app/feature/domain/entities/location_entity.dart';
 import 'package:test_app/feature/domain/entities/search_location_entity.dart';
 import 'package:test_app/feature/domain/repositories/forecast_repo.dart';
 

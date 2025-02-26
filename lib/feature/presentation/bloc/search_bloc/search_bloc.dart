@@ -39,13 +39,13 @@ class LocationSearchBloc
     } catch (e) {
       logger
           .e("An unexpected error occurred: $e"); // Логируем неожиданную ошибку
-      emit(LocationSearchError(message: "An unexpected error occurred."));
+      emit(const LocationSearchError(message: "An unexpected error occurred."));
     }
   }
 
   String _failureToMessage(Failure failure) {
     switch (failure.runtimeType) {
-      case ServerFailure:
+      case ServerFailure _:
         return 'Server Failure';
       default:
         return '?? failure)';

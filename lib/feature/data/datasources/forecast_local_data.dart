@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 import 'package:test_app/core/error/exceptions.dart';
@@ -20,7 +22,6 @@ class ForecastLocalDataSource implements ForecastLocalData {
   Future<GeneralForecastModel> getLastForecastFromCache() {
     final jsonForecast = sharedPreferences.getString((CACHED_FORECAST));
     if (jsonForecast!.isNotEmpty) {
-      print('Cache: ${jsonForecast.length}');
       return Future.value(
           GeneralForecastModel.fromJson(json.decode(jsonForecast)));
     } else {
@@ -33,7 +34,6 @@ class ForecastLocalDataSource implements ForecastLocalData {
     final String jsonForecast = json.encode(forecast.toJson());
 
     sharedPreferences.setString(CACHED_FORECAST, jsonForecast);
-    print('Cache:  ${jsonForecast}');
     return Future.value(jsonForecast);
   }
 }

@@ -15,7 +15,7 @@ class LocationLoading extends LocationSearchState {}
 class LocationLoaded extends LocationSearchState {
   final List<SearchLocationEntity> locations;
 
-  LocationLoaded({required this.locations});
+  const LocationLoaded({required this.locations});
 
   @override
   List<Object> get props => [locations];
@@ -24,7 +24,7 @@ class LocationLoaded extends LocationSearchState {
 class LocationSearchError extends LocationSearchState {
   final String message;
 
-  LocationSearchError({required this.message});
+  const LocationSearchError({required this.message});
 
   @override
   List<Object> get props => [message];

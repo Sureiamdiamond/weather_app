@@ -12,7 +12,6 @@ import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_event.
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_state.dart';
 import 'package:test_app/feature/presentation/pages/search_page.dart';
 import 'package:test_app/feature/presentation/widgets/loading_widget.dart';
-import 'package:weather_icons/weather_icons.dart';
 
 class ForecastWidget extends StatefulWidget {
 
@@ -88,14 +87,16 @@ class _ForecastWidgetState extends State<ForecastWidget>
     return (hour >= 2 && hour <= 18) ? "day" : "night";
   }
 
+  int showHour (String localtime) {
+    int hour = int.parse(localtime.split(" ")[1].split(":")[0]);
+    return hour;
+  }
+
 
   String _getDate(String localtime) {
     String dateName = DateFormat('MMM d').format(DateFormat("yyyy-MM-DD").parse(localtime));
     return dateName;
   }
-
-
-
 
 
 
@@ -119,26 +120,14 @@ class _ForecastWidgetState extends State<ForecastWidget>
           );
         } else if (state is ForecastLoaded) {
 
-
-
-          final List<Map<String, String>> weatherData = [
-            {'temp': '31°C', 'time': '15:00'},
-            {'temp': '30°C', 'time': '16:00'},
-            {'temp': '28°C', 'time': '17:00'},
-            {'temp': '28°C', 'time': '18:00'},
-          ];
-
-
           _fadeController.forward();
-
           final forecast = state.forecast;
+          showHour(forecast.location?.localtime??"00:00");
           final String dayOrNight = _getDayOrNight(forecast.location?.localtime ?? "00:00");
           String condition = forecast.current!.condition!.text!.toLowerCase();
           final Gradient backColor = _getBackgroundGradient(
               forecast.current?.condition?.text?.toLowerCase() ?? "sunny",
-              forecast.current?.isday ?? 2
-          );
-
+              forecast.current?.isday ?? 2);
           String dayName = _getWeekDay(forecast.location?.localtime ?? "");
           return FadeTransition(
             opacity: _fadeAnimation,
@@ -361,7 +350,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
 
                                       SvgPicture.asset('assets/images/humidity_bar.svg') ,
                                       Text(
-                                        '${forecast.current?.humidity.toString()}%'??"",
+                                        '${forecast.current?.humidity.toString()}%',
                                         style: AppTextStyles.subheading,
                                       ),
                                     ],
@@ -414,11 +403,16 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                   ),
                                   const SizedBox(height: 10,),
                                   SizedBox(
-                                    height: 140,
+                                    height: 138,
                                     child: ListView.builder(
+                                      padding: EdgeInsets.zero,
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: weatherData.length,
+                                      itemCount: forecast.forecast?.forecastday?.first?.hour?.length ?? 0,
                                       itemBuilder: (context, index) {
+                                        final hourData = forecast.forecast?.forecastday?.first?.hour?[index];
+                                        final time = hourData?.time?.split(" ").last ?? "No Data";
+                                        final temp = hourData?.tempc?.toInt() ?? "N/A"; // Temperature in Celsius
+                                        final iconUrl = "https:${hourData?.condition?.icon ?? ""}"; // Weather icon URL
 
                                         return AnimatedContainer(
                                           duration: const Duration(milliseconds: 300),
@@ -426,14 +420,15 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                           margin: const EdgeInsets.symmetric(horizontal: 8),
                                           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                                           decoration: BoxDecoration(
-                                            color: Color.fromARGB(18, 3, 15, 25),
+                                            color: const Color.fromARGB(18, 3, 15, 25),
                                             borderRadius: BorderRadius.circular(16),
                                           ),
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
+                                              // Display temperature
                                               Text(
-                                                weatherData[index]['temp']!,
+                                                "$temp°C",
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 18,
@@ -441,16 +436,27 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                                 ),
                                               ),
                                               const SizedBox(height: 8),
-                                              const Icon(
-                                                Icons.cloud,
-                                                color: Colors.white70,
+                                              // Display weather icon
+                                              Image.network(
+                                                iconUrl,
+                                                width: 45,
+                                                height: 45,
+                                                errorBuilder: (context, error, stackTrace) {
+                                                  return const Icon(
+                                                    Icons.cloud,
+                                                    color: Colors.white70,
+                                                    size: 30,
+                                                  ); // Fallback icon
+                                                },
                                               ),
                                               const SizedBox(height: 8),
+                                              // Display time
                                               Text(
-                                                weatherData[index]['time']!,
+                                                time,
                                                 style: const TextStyle(
-                                                  color: Colors.white70,
+                                                  color: Colors.white,
                                                   fontSize: 14,
+                                                  fontFamily: 'SP'
                                                 ),
                                               ),
                                             ],
@@ -458,7 +464,8 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                         );
                                       },
                                     ),
-                                  )
+                                  ),
+
 
                                 ],
                               ),
@@ -468,25 +475,121 @@ class _ForecastWidgetState extends State<ForecastWidget>
                           const SizedBox(height: 20,),
                           /// medium (third) circular radius container
                           Padding(
-                            padding: const EdgeInsets.only(left: 25 , right:25),
+                            padding: const EdgeInsets.only(left: 25, right: 25),
                             child: Container(
-                              height: 150,
+                              height: 180,
                               width: double.infinity,
                               decoration: const BoxDecoration(
-                                  color: Color.fromARGB(56, 1, 17, 28),
-                                  borderRadius: BorderRadius.all(Radius.circular(20))
+                                color: Color.fromARGB(56, 1, 17, 28),
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
                               ),
-                              child: const Column(),
-                            ),
-                          )
+                              child: Column(
+                                children: [
+                                  const Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(top : 13.0 , left: 15 , right: 15),
+                                      child: Text("Next Forecast" ,  style: AppTextStyles.today),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top : 13.0 , left: 13 , right: 13),
+                                      child: Icon(Icons.calendar_month_outlined , color: Colors.white,size: 26,),
+                                    )
+                                  ],),
+                                  SizedBox(
+                                    height: 125,
+                                    child: ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: forecast.forecast?.forecastday?.length ?? 0, // 3 days of forecast
+                                      itemBuilder: (context, index) {
+                                        final dayData = forecast.forecast?.forecastday?[index];
+                                        final date = dayData?.date != null ? _getDate(dayData!.date!) : "No Date";
 
+                                        final minTemp = dayData?.day?.mintempc?.toInt() ?? "N/A";
+                                        final maxTemp = dayData?.day?.maxtempc?.toInt() ?? "N/A";
+                                        final iconUrl = "https:${dayData?.day?.condition?.icon ?? ""}"; // Weather icon URL
+
+                                        return AnimatedContainer(
+                                          duration: const Duration(milliseconds: 300),
+                                          width: 200,
+                                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              // Display Date (Day) on the left
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    date,
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 17,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              // Display Weather Icon in the center
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+
+                                                  Image.network(
+                                                    iconUrl,
+                                                    width: 44,
+                                                    height: 44,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return const Icon(
+                                                        Icons.cloud,
+                                                        color: Colors.white70,
+                                                        size: 30,
+                                                      ); // Fallback icon
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                              // Display Max and Min Temp on the right
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                children: [
+                                                  Text( "$maxTemp°C",
+
+                                                    style: const TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                    ),),
+
+                                                  Text(
+                                                    "$minTemp°C",
+                                                    style: const TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize: 13,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
 
                         ],
                       ),
                       const SizedBox(height: 150,),
-
-
-
 
                       ///
                       /// ///
@@ -500,57 +603,6 @@ class _ForecastWidgetState extends State<ForecastWidget>
                           ///
                           ///
 
-
-                      Container(
-                        padding: const EdgeInsets.only(top: 5),
-
-                        child: Column(
-                          children: [
-
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                          _getWeekDay(
-                                                  '${forecast.forecast?.forecastday?[0]?.date} ')
-                                              .substring(0, 3),
-                                          style: AppTextStyles.days),
-                                      Image.network(
-                                          "https:${forecast.forecast?.forecastday?[0]?.day?.condition?.icon}"),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                          _getWeekDay(
-                                                  '${forecast.forecast?.forecastday?[1]?.date} ')
-                                              .substring(0, 3),
-                                          style: AppTextStyles.days),
-                                      Image.network(
-                                          "https:${forecast.forecast?.forecastday?[1]?.day?.condition?.icon}"),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                          _getWeekDay(
-                                                  '${forecast.forecast?.forecastday?[2]?.date} ')
-                                              .substring(0, 3),
-                                          style: AppTextStyles.days),
-                                      Image.network(
-                                          "https:${forecast.forecast?.forecastday?[2]?.day?.condition?.icon}"),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       Column(children: [
                         const Divider(),
                         const Text(
@@ -672,8 +724,8 @@ Gradient _getBackgroundGradient(String description, int isDay) {
         description.contains("cloud") ||
         description.contains("fog")) {
       return  const LinearGradient(
-        colors: [Color.fromARGB(255, 214, 214, 214), Color.fromARGB(255, 90, 87, 87) ,Color.fromARGB(
-            255, 19, 19, 19) ],
+        colors: [Color.fromARGB(255, 86, 89, 90), Color.fromARGB(255, 90, 87, 87) ,Color.fromARGB(
+            255, 106, 151, 186),Color.fromARGB(255, 68, 139, 202)  ],
         begin: Alignment.bottomRight,
         end: Alignment.topLeft,
       );

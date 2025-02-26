@@ -5,7 +5,6 @@ import 'package:logger/logger.dart';
 import 'package:test_app/env/env.dart';
 import 'package:test_app/core/error/exceptions.dart';
 import 'package:test_app/feature/data/models/forecast_model.dart';
-import 'package:test_app/feature/data/models/location_model.dart';
 import 'package:test_app/feature/data/models/search_location_model.dart';
 
 abstract class ForecastRemoteData {
