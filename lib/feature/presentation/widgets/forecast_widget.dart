@@ -635,6 +635,9 @@ class _ForecastWidgetState extends State<ForecastWidget>
                           'Moon phase: ${forecast.forecast?.forecastday?[0]?.astro?.moonphase ?? ""}',
                           style: AppTextStyles.subheading,
                         ),
+                        const SizedBox(height: 10,),
+                        Text("UV"),
+                        Text(forecast.forecast?.forecastday?.first?.day?.uv?.toString() ?? "No Data"),
                         const SizedBox(height: 50,),
 
                       ]),

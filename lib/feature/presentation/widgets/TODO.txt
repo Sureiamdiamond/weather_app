@@ -1,6 +1,7 @@
 
 additional  info ---> match the ui
 astro part ---- > match the ui
+radial chart  for uv
 
 
 search screen
