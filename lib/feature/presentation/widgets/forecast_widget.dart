@@ -87,6 +87,17 @@ class _ForecastWidgetState extends State<ForecastWidget>
     return (hour >= 2 && hour <= 18) ? "day" : "night";
   }
 
+  String feelsLikeTexts(double tempC, double feelsLikeC) {
+    if (feelsLikeC < tempC) {
+      return "little colder than current temp";
+    } else if (feelsLikeC > tempC) {
+      return "little warmer than current temp";
+    } else {
+      return "Similar to the actual temperature.";
+    }
+  }
+
+
   int showHour (String localtime) {
     int hour = int.parse(localtime.split(" ")[1].split(":")[0]);
     return hour;
@@ -97,6 +108,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
     String dateName = DateFormat('MMM d').format(DateFormat("yyyy-MM-DD").parse(localtime));
     return dateName;
   }
+
 
 
 
@@ -129,6 +141,10 @@ class _ForecastWidgetState extends State<ForecastWidget>
               forecast.current?.condition?.text?.toLowerCase() ?? "sunny",
               forecast.current?.isday ?? 2);
           String dayName = _getWeekDay(forecast.location?.localtime ?? "");
+          final tempC = forecast.forecast?.forecastday?.first?.hour?.first?.tempc ?? 0.0;
+          final feelsLikeC = forecast.forecast?.forecastday?.first?.hour?.first?.feelslikec ?? 0.0;
+
+          final temperatureMessage = feelsLikeTexts(tempC, feelsLikeC);
           return FadeTransition(
             opacity: _fadeAnimation,
             child: Container(
@@ -586,61 +602,406 @@ class _ForecastWidgetState extends State<ForecastWidget>
                               ),
                             ),
                           ),
-
                         ],
                       ),
-                      const SizedBox(height: 150,),
+                      const SizedBox(height: 20,),
+                    
+                    ///first two small widget
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25 , right:25),
+                      child: Row(
+                        children: [
+                          ///feels like
+                          Container(
+                            height: 165,
+                            width: MediaQuery.of(context).size.width / 2.42,
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(56, 1, 17, 28),
+                              borderRadius: BorderRadius.all(Radius.circular(22)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, top: 12),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/tempture.png",
+                                        height: 18,
+                                        color: const Color(0xe5c7e9ff),
+                                      ),
+                                      const SizedBox(width: 5), // Add spacing
+                                      const Text("FEELS LIKE", style: AppTextStyles.smallWidget),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 11),
+                                  child: Text(
+                                    '${forecast.current?.feelslikec?.toInt()}°',
+                                    style: AppTextStyles.temperatureSmall,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 11),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width / 2.42 , // Ensure text doesn't exceed width
+                                    child: Text(
+                                      temperatureMessage,
+                                      style: AppTextStyles.smallText,
+                                      overflow: TextOverflow.ellipsis, // Avoid overflow
+                                      maxLines: 2, // Set max lines
+                                      softWrap: true, // Enable text wrapping
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
 
-                      ///
-                      /// ///
-                      ///
-                          /// ///
-                          /// ///
-                          /// /
-                          /// //
-                          ///
-                          ///
-                          ///
-                          ///
 
-                      Column(children: [
-                        const Divider(),
-                        const Text(
-                          "Additional Information",
-                          style: AppTextStyles.heading,
-                        ),
-                        Text(
-                          "Temperature feels like: ${forecast.current?.feelslikec}°C\nPressure: ${forecast.current?.pressuremb} mb\nGust: ${forecast.current?.gustkph} kmh",
-                          style: AppTextStyles.subheading,
-                        ),
-                        const Divider(),
-                        const Text("Astro part", style: AppTextStyles.heading),
-                        Text(
-                          "Sunrise: ${forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? ""}",
-                          style: AppTextStyles.subheading,
-                        ),
-                        Text(
-                          "Sunset: ${forecast.forecast?.forecastday?[0]?.astro?.sunset ?? ""}",
-                          style: AppTextStyles.subheading,
-                        ),
-                        Text(
-                          "Moonrise: ${forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? ""}",
-                          style: AppTextStyles.subheading,
-                        ),
-                        Text(
-                          "Moonset: ${forecast.forecast?.forecastday?[0]?.astro?.moonset ?? ""}",
-                          style: AppTextStyles.subheading,
-                        ),
-                        Text(
-                          'Moon phase: ${forecast.forecast?.forecastday?[0]?.astro?.moonphase ?? ""}',
-                          style: AppTextStyles.subheading,
-                        ),
-                        const SizedBox(height: 10,),
-                        Text("UV"),
-                        Text(forecast.forecast?.forecastday?.first?.day?.uv?.toString() ?? "No Data"),
-                        const SizedBox(height: 50,),
+                          const SizedBox(width: 15),
 
-                      ]),
+                          ///gust
+                          Container(
+                          height: 165,
+                          width: MediaQuery.of(context).size.width/2.35,
+                          decoration: const BoxDecoration(
+                              color: Color.fromARGB(56, 1, 17, 28),
+                              borderRadius: BorderRadius.all(Radius.circular(22))
+                          ),
+                          child:  Column(
+                            crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0, top: 12),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/small_wind.png",
+                                      height: 18,
+                                      color: const Color(0xe5c7e9ff),
+                                    ),
+                                    const SizedBox(width: 5), // Add spacing
+                                    const Text("GUST", style: AppTextStyles.smallWidget),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 11),
+                                    child: Text(
+                                      '${forecast.current?.gustkph}',
+                                      style: AppTextStyles.gust,
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 2 , top: 15),
+                                    child: Text(
+                                      'Kp/h',
+                                      style: AppTextStyles.kph,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Center(
+                                child: ProgressBar(value: forecast.current?.gustkph?.toDouble() ?? 0.0),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 11 , top: 6.5),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width / 2.42 , // Ensure text doesn't exceed width
+                                  child: const Text(
+                                   "The gust shows sudden, strong bursts of wind",
+                                    style: AppTextStyles.smallText,
+                                    overflow: TextOverflow.ellipsis, // Avoid overflow
+                                    maxLines: 2, // Set max lines
+                                    softWrap: true, // Enable text wrapping
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),),
+                        ],
+                      ),
+                    ),
+                          const SizedBox(height: 13,),
+
+                    ///sunset & moonset
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25 , right:25),
+                      child: Container(
+                          height: 180,
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(56, 1, 17, 28),
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(22)),
+                          child: Stack(
+                            children: [
+                              Image.asset(
+                                "assets/images/sunrise.png",
+                                fit: BoxFit.cover, // Adjust the fit as needed
+                                height: double.infinity,
+                                width: double.infinity,
+                              ),
+                               const Positioned(
+                                bottom: 45, // You can adjust the position of the text
+                                left: 20,
+                                child:
+                                    Text(
+                                      "Sunrise",
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+
+                              ),
+                              Positioned(
+                                bottom: 37, // You can adjust the position of the text
+                                left: 20,
+                                child:
+                                Text(
+                                  forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? "",
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),)
+
+                              ),
+                              const Positioned(
+                                bottom: 13, // You can adjust the position of the text
+                                left: 20,
+                                child:
+                                Text(
+                                  "Sunset",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                              ),
+                              Positioned(
+                                  bottom: 6, // You can adjust the position of the text
+                                  left: 20,
+                                  child:
+                                  Text(
+                                    forecast.forecast?.forecastday?[0]?.astro?.sunset ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold,
+                                    ),)
+
+                              ),
+
+
+                              const Positioned(
+                                bottom: 45, // You can adjust the position of the text
+                                right: 20,
+                                child:
+                                Text(
+                                  "Moonrise",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                              ),
+                              Positioned(
+                                  bottom: 37, // You can adjust the position of the text
+                                  right: 50,
+                                  child:
+                                  Text(
+                                    forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),)
+
+                              ),
+                              const Positioned(
+                                bottom: 13, // You can adjust the position of the text
+                                right: 26,
+                                child:
+                                Text(
+                                  "Moonset",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                              ),
+                              Positioned(
+                                  bottom: 6, // You can adjust the position of the text
+                                  right: 50,
+                                  child:
+                                  Text(
+                                    forecast.forecast?.forecastday?[0]?.astro?.moonset ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold,
+                                    ),)
+
+                              ),
+
+
+                            ],
+                          )),
+                      ),
+                    ),
+                          const SizedBox(height: 13,),
+
+
+                   ///second two small widget
+                          Padding(
+                      padding: const EdgeInsets.only(left: 25 , right:25),
+                      child: Row(
+                        children: [
+
+                          ///UV
+                          Container(
+                            height: 165,
+                            width: MediaQuery.of(context).size.width/2.35,
+                            decoration: const BoxDecoration(
+                                color: Color.fromARGB(56, 1, 17, 28),
+                                borderRadius: BorderRadius.all(Radius.circular(22))
+                            ),
+                            child:  Column(
+                              crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, top: 10),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/uv_small.png",
+                                        height: 20,
+
+                                        color: const Color(0xe5c7e9ff),
+                                      ),
+                                      const SizedBox(width: 5), // Add spacing
+                                      const Padding(
+                                        padding: EdgeInsets.only(top:3.0),
+                                        child: Text("UV INDEX", style: AppTextStyles.smallWidget),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 11),
+                                      child: Text(
+                                        forecast.forecast?.forecastday?.first?.day?.uv?.toString() ?? "No Data",
+                                        style: AppTextStyles.gust,
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
+                                Center(
+                                  child:UVIndexBar(uvIndex:forecast.forecast?.forecastday?.first?.day?.uv?.toDouble() ??0),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 11 , top: 6.5),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width / 2.42 , // Ensure text doesn't exceed width
+                                    child: const Text(
+                                      "The gust shows sudden, strong bursts of wind",
+                                      style: AppTextStyles.smallText,
+                                      overflow: TextOverflow.ellipsis, // Avoid overflow
+                                      maxLines: 2, // Set max lines
+                                      softWrap: true, // Enable text wrapping
+                                    ),
+                                  ),
+                                ),
+
+                              ],
+                            ),),
+
+                          const SizedBox(width: 15),
+
+                          /// pressure
+                          Container(
+                            height: 165,
+                            width: MediaQuery.of(context).size.width / 2.42,
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(56, 1, 17, 28),
+                              borderRadius: BorderRadius.all(Radius.circular(22)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, top: 12),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/pressure.png",
+                                        height: 18,
+                                        color: const Color(0xe5c7e9ff),
+                                      ),
+                                      const SizedBox(width: 5), // Add spacing
+                                      const Text("PRESSURE", style: AppTextStyles.smallWidget),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 11 , top: 10),
+                                  child: Row(
+                                    children: [
+                                      Text(forecast.current?.pressuremb?.toString()??"" , style: AppTextStyles.pressure,),
+                                      const SizedBox(width: 2,),
+                                      const Padding(
+                                        padding: EdgeInsets.only(top:9.5),
+                                        child: Text(
+                                          'mb',
+                                          style: AppTextStyles.mb,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 11 , top: 9),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width / 2.42 , // Ensure text doesn't exceed width
+                                    child: const Text(
+                                      "indicating how heavy or light it is in location",
+                                      style: AppTextStyles.smallText,
+                                      overflow: TextOverflow.ellipsis, // Avoid overflow
+                                      maxLines: 4, // Set max lines
+                                      softWrap: true, // Enable text wrapping
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                      const SizedBox(height: 100,),
+
+
+
                     ]),
                   ),
                 ),
@@ -802,6 +1163,14 @@ class AppTextStyles {
     fontFamily: 'SF',
     color: Colors.white,
   );
+  static const TextStyle smallWidget = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'SF',
+    color: Color(0xe5c7e9ff),
+  );
+
+
 
 
   static const TextStyle lightTexts = TextStyle(
@@ -828,11 +1197,143 @@ class AppTextStyles {
     color: Colors.white,
   );
 
+  static const TextStyle temperatureSmall = TextStyle(
+    fontSize: 60,
+    fontFamily: 'SF',
+    color:Color(0xe5c7e9ff)
+  );
+  static const TextStyle gust = TextStyle(
+      fontSize: 50,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'SF',
+      color:Color(0xe5c7e9ff)
+  );
+
+  static const TextStyle smallText = TextStyle(
+      fontSize: 13,
+      fontFamily: 'SF',
+      color:Color(0xe5c7e9ff),
+
+  );
+  static const TextStyle mb = TextStyle(
+      fontSize: 13,
+      fontFamily: 'SF',
+      color:Color(0xe5c7e9ff),
+    fontWeight: FontWeight.w600,
+
+  );
+
+
+  static const TextStyle pressure = TextStyle(
+      fontSize: 40,
+      fontFamily: 'SF',
+      fontWeight: FontWeight.w500,
+      color:Color(0xe5c7e9ff)
+  );
+  static const TextStyle kph = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'SF',
+      color:Color(0xe5c7e9ff)
+  );
+
   static const TextStyle days = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w500,
     fontStyle: FontStyle.italic,
     fontFamily: 'Open Sans',
     color: Colors.white,
+  );
+}
+
+
+
+Widget ProgressBar({required double value}) {
+  double progress = (value.clamp(0, 70)) / 70;
+
+  Color getColor(double value) {
+    if (value >= 0 && value < 4) {
+      return Colors.purple;
+    } else if (value >= 4 && value < 12) {
+      return Colors.blue;
+    } else if (value >= 12 && value < 20) {
+      return Colors.green;
+    } else if (value >= 20 && value < 28) {
+      return Colors.yellow;
+    } else if (value >= 28 && value < 35) {
+      return Colors.orange;
+    } else if (value >= 35 && value < 45) {
+      return Colors.red;
+    } else if (value >= 45 && value <= 70) {
+      return Colors.deepPurple;
+    } else {
+      return Colors.white;
+    }
+  }
+
+  return Container(
+    width: 150,
+    height: 6,
+    decoration: BoxDecoration(
+
+      borderRadius: BorderRadius.circular(10),
+      color: const Color(0x25021C2E), // Background color
+    ),
+    child: Stack(
+      children: [
+        FractionallySizedBox(
+          widthFactor: progress, // Fill proportionally from 0 to 1
+          child: Container(
+            decoration: BoxDecoration(
+              color: getColor(value),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+
+      ],
+    ),
+  );
+}
+
+Widget UVIndexBar({required double uvIndex}) {
+  // Calculate position of the circle based on UV index, ensuring it's between 0 and 1
+  double position = uvIndex * 11.8;
+
+  // Colors for the gradient based on UV index
+  List<Color> gradientColors = [
+    Colors.green, // Low UV
+    Colors.yellow,
+    Colors.orange,
+    Colors.red,
+    Colors.purple,
+    Colors.blue, // High UV
+  ];
+
+  return Container(
+    width: 150,
+    height: 6,
+
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(3),
+      gradient: LinearGradient(
+        colors: gradientColors,
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      ),
+    ),
+    child: Stack(
+      children: [
+        Positioned(
+          left: position, // Position the circle
+          top: 0, // Slightly above the bar to center the circle
+          child: Container(
+            width: 6,
+            height: 7,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
   );
 }

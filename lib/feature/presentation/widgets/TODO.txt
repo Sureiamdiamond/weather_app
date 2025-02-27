@@ -1,8 +1,5 @@
 
 additional  info ---> match the ui
-astro part ---- > match the ui
-radial chart  for uv
-
 
 search screen
 bottom of the page have info button
@@ -15,3 +12,7 @@ university logo at splash and info screen
 teacher name at splash and info screen
 logo for app
 locale the app persian language?
+
+
+
+learn Bloc with it
