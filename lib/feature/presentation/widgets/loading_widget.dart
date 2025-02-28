@@ -41,12 +41,12 @@ class _LoadingIconState extends State<LoadingIcon>
                       builder: (context, child) {
               return Transform.rotate(
                 angle: _controller.value * 2.0 * 3.14159,
-                child:const CircularProgressIndicator( color: Colors.black,)
+                child:const CircularProgressIndicator( color: Colors.black45,)
               );
                       },
                     ),
               const SizedBox(height: 12),
-              const Text("Loading" , style: TextStyle(fontFamily: "SF" , fontWeight: FontWeight.bold),)
+              const Text("Loading" , style: TextStyle(fontFamily: "SF" , fontWeight: FontWeight.bold , color: Colors.black45),)
             ],
           )),
     );

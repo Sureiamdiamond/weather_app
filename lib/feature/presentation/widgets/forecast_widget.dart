@@ -13,6 +13,8 @@ import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_state.
 import 'package:test_app/feature/presentation/pages/search_page.dart';
 import 'package:test_app/feature/presentation/widgets/loading_widget.dart';
 
+import '../pages/info.dart';
+
 class ForecastWidget extends StatefulWidget {
 
   const ForecastWidget({super.key});
@@ -172,7 +174,35 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                       icon: const Icon(Icons.location_on_outlined),
                                       color: Colors.white,
                                       iconSize: 35,
-                                      onPressed: () {},
+                                      onPressed: () {
+
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            elevation: 0,
+                                            backgroundColor: const Color(0x234354),
+                                            content: Container(
+                                              width: 700,
+                                              height: 60,// Set the width
+                                              padding: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xC8042B49), // Background color
+                                                borderRadius: BorderRadius.circular(30), // Rounded corners
+                                              ),
+                                              child: Center(
+                                                child:  Text(
+                                                  'Your Chosen location is ${forecast.location?.name} - ${forecast.location?.country}',
+                                                  style: AppTextStyles.days,
+                                                ),
+                                              ),
+                                            ),
+
+                                            duration: const Duration(milliseconds: 2400),
+                                            behavior: SnackBarBehavior.floating, // Make the Snackbar float
+                                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20), // Space from the bottom
+                                          ),
+                                        );
+
+                                      },
                                     ),
                                     Text(forecast.location?.name ?? "", style: AppTextStyles.cityName,),
                                   ],
@@ -182,7 +212,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                     final result = await Navigator.of(context).push(
                                       PageRouteBuilder(
                                         pageBuilder: (context, animation, secondaryAnimation) {
-                                          return SearchPage();
+                                          return const SearchPage();
                                         },
                                         transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                           const begin = Offset(0.0, 1.0);
@@ -210,10 +240,10 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Center(
-                                                    child: CircularProgressIndicator(color: Colors.black,),
+                                                    child: CircularProgressIndicator(color: Colors.black45),
                                                   ),
                                                   SizedBox(height: 12,),
-                                                  Text("Loading", style: TextStyle(fontFamily: "SF", fontWeight: FontWeight.bold),)
+                                                  Text("Loading", style: TextStyle(fontFamily: "SF", fontWeight: FontWeight.bold , color: Colors.black45),)
                                                 ],
                                               ),
                                             );
@@ -924,7 +954,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                   child: SizedBox(
                                     width: MediaQuery.of(context).size.width / 2.42 , // Ensure text doesn't exceed width
                                     child: const Text(
-                                      "The gust shows sudden, strong bursts of wind",
+                                      "wear sunglasses to protect your eyes from UV rays",
                                       style: AppTextStyles.smallText,
                                       overflow: TextOverflow.ellipsis, // Avoid overflow
                                       maxLines: 2, // Set max lines
@@ -998,7 +1028,38 @@ class _ForecastWidgetState extends State<ForecastWidget>
                         ],
                       ),
                     ),
-                      const SizedBox(height: 100,),
+                      const SizedBox(height: 70,),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0x35040404),
+                              borderRadius: BorderRadius.circular(40)
+                            ),
+                              child: IconButton(
+                                  onPressed: () async {
+                                   await Navigator.of(context).push(
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation, secondaryAnimation) {
+                                          return const InfoScreen();
+                                        },
+                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                          const begin = Offset(0.0, 1.0);
+                                          const end = Offset.zero;
+                                          const curve = Curves.easeInOut;
+                                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                          var offsetAnimation = animation.drive(tween);
+
+                                          return SlideTransition(
+                                            position: offsetAnimation,
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    );
+
+                                  },
+                                  icon: const Icon(Icons.info_outline_rounded , size: 30, color: Colors.white,))),
+                          const Text("Info" , style: AppTextStyles.lightTexts,),
+                          const SizedBox(height: 50,),
 
 
 
@@ -1128,13 +1189,7 @@ Gradient _getBackgroundGradient(String description, int isDay) {
 
 
 class AppTextStyles {
-  static const TextStyle heading = TextStyle(
-    fontSize: 28,
-    fontWeight: FontWeight.bold,
-    fontStyle: FontStyle.italic,
-    fontFamily: 'Open Sans',
-    color: Colors.white,
-  );
+
 
   static const TextStyle cityName = TextStyle(
     fontSize: 35,
@@ -1157,11 +1212,44 @@ class AppTextStyles {
     color: Colors.white,
   );
 
+  static const TextStyle HeaderInfoStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Sahel',
+    color: Colors.black,
+  );
+  static const TextStyle SubttileinfoStyle = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Sahel',
+    color: Colors.black,
+  );
+
+  static const TextStyle ProjectDes = TextStyle(
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Sahel',
+    color: Color(0xbb191e22),
+  );
+  static const TextStyle TtileInfoStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Sahel',
+    color: Colors.black,
+  );
+
   static const TextStyle today = TextStyle(
     fontSize: 22,
     fontWeight: FontWeight.w600,
     fontFamily: 'SF',
     color: Colors.white,
+  );
+
+  static const TextStyle search = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'SF',
+    color: Colors.black,
   );
   static const TextStyle smallWidget = TextStyle(
     fontSize: 15,
@@ -1210,7 +1298,7 @@ class AppTextStyles {
   );
 
   static const TextStyle smallText = TextStyle(
-      fontSize: 13,
+      fontSize: 12.5,
       fontFamily: 'SF',
       color:Color(0xe5c7e9ff),
 
@@ -1238,10 +1326,10 @@ class AppTextStyles {
   );
 
   static const TextStyle days = TextStyle(
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: FontWeight.w500,
-    fontStyle: FontStyle.italic,
-    fontFamily: 'Open Sans',
+
+    fontFamily: 'SF',
     color: Colors.white,
   );
 }

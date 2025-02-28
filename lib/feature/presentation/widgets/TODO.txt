@@ -1,18 +1,17 @@
 
-additional  info ---> match the ui
-
-search screen
-bottom of the page have info button
-press on location icon say your location is tehran in iran - local time
 
 
-
-app name ---> Weatherly
-university logo at splash and info screen
-teacher name at splash and info screen
-logo for app
+splash screen
 locale the app persian language?
+test speech if doesnt work remove it
 
 
 
+
+APP NAME and PROJECT ---> Weatherly
+logo for app
+
+
+optimise project and widgets and text styles
+new github with it --> all new files
 learn Bloc with it

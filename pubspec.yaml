@@ -53,6 +53,8 @@ dependencies:
   animations: ^2.0.11
   flutter_svg: ^2.0.4
   intl: ^0.20.2
+  speech_to_text: ^7.0.0
+  url_launcher: ^6.3.1
 
 
 dev_dependencies:
@@ -80,18 +82,19 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
   assets:
     - assets/images/
-fonts:
-#    - family: AntonSC-Regular
-#      fonts:
-#        - asset: assets/fonts/AntonSC-Regular.ttf
-#    - family: AR One Sans
-#      fonts:
-#        - asset: assets/fonts/AROneSans-Regular.ttf
-#        - asset: assets/fonts/AROneSans-SemiBold.ttf
-#          weight: 700
+
+
+  fonts:
+    - family: Sahel
+      fonts:
+        - asset: assets/fonts/Sahel-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Sahel.ttf
+          weight: 300
+        - asset: assets/fonts/Sahel-Black.ttf
+          weight: 500
     - family: SF
       fonts:
         - asset: assets/fonts/SFPRODISPLAYREGULAR.ttf
@@ -99,6 +102,9 @@ fonts:
           weight: 300
         - asset: assets/fonts/SFPRODISPLAYMEDIUM.ttf
           weight: 700
+
+
+
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
