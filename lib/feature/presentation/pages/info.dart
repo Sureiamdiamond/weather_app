@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:test_app/gen/assets.gen.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../gen/assets.gen.dart';
 import '../widgets/forecast_widget.dart';
 
 class InfoScreen extends StatelessWidget {
@@ -19,7 +20,6 @@ class InfoScreen extends StatelessWidget {
             Navigator.pop(context); // This will navigate back to the previous screen
           },
         ),
-
       ),
       backgroundColor: Colors.white,
       body: Center(

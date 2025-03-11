@@ -1,7 +1,15 @@
+import 'package:accordion/accordion.dart';
+import 'package:accordion/accordion_section.dart';
+import 'package:accordion/controllers.dart';
 import 'package:animated_emoji/animated_emoji.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_flip_card/controllers/flip_card_controllers.dart';
+import 'package:flutter_flip_card/flipcard/flip_card.dart';
+import 'package:flutter_flip_card/flipcard/gesture_flip_card.dart';
+import 'package:flutter_flip_card/modal/flip_side.dart';
+import 'package:flutter_tilt/flutter_tilt.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,8 +20,10 @@ import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_event.
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_state.dart';
 import 'package:test_app/feature/presentation/pages/search_page.dart';
 import 'package:test_app/feature/presentation/widgets/loading_widget.dart';
+import 'package:test_app/gen/assets.gen.dart';
 
 import '../pages/info.dart';
+import '../pages/FlipCard.dart';
 
 class ForecastWidget extends StatefulWidget {
 
@@ -1063,6 +1073,138 @@ class _ForecastWidgetState extends State<ForecastWidget>
 
 
 
+
+
+
+
+
+                          ///NEW UI FEATURE
+
+                          ///parrarel image
+                          Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Tilt(
+                    tiltConfig: const TiltConfig(
+                    leaveCurve: Curves.easeInOutCubicEmphasized,
+                      leaveDuration: Duration(milliseconds: 600),
+                    ),
+                    lightConfig: const LightConfig(disable: true),
+                    shadowConfig: const ShadowConfig(disable: true),
+                    childLayout:  ChildLayout(
+                      outer: [
+                        Positioned(
+                          right: 20,
+                          bottom: 5,
+                          child:   TiltParallax(
+                            size: const Offset(5, 20),
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Moonrise",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? "",
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),),
+                                const Text(
+                                  "Moonset",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  forecast.forecast?.forecastday?[0]?.astro?.moonset ?? "",
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold,
+                                  ),),
+                              ],
+                            )
+                        ),
+                        ),
+
+                        Positioned(
+                          left: 20,
+                          bottom: 5,
+                          child:TiltParallax(
+                              size: const Offset(5, 20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Sunrise",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),),
+                                  const Text(
+                                    "Sunset",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    forecast.forecast?.forecastday?[0]?.astro?.sunset ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold,
+                                    ),),
+
+
+                                ],
+                              )
+                          ),
+                        ),
+                      ],
+                    ),
+
+
+                    child: Container(
+                      height: 190,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(56, 1, 17, 28),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(22)),
+                        child: Image.asset(
+                          "assets/images/sunrise.png",
+                          fit: BoxFit.cover, // Adjust the fit as needed
+                          height: double.infinity,
+                          width: double.infinity,
+                        ),
+                      ),
+                    ),
+                                    ),
+                  ),
+                          const SizedBox(height: 50,),
+
+
+
                     ]),
                   ),
                 ),
@@ -1425,3 +1567,7 @@ Widget UVIndexBar({required double uvIndex}) {
     ),
   );
 }
+
+
+
+

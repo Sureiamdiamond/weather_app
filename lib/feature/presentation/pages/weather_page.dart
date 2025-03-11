@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:test_app/feature/presentation/widgets/forecast_widget.dart';
 
+import '../../../gen/assets.gen.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -43,9 +45,16 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Container(
-            color: Colors.white,
-            child: const Text("Weather App" , style: TextStyle(fontFamily: 'SF' , fontSize: 20),)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(22)),
+                child: Image.asset(Assets.images.appLogo.path , height: 110,)),
+            const Text("Weatherly" , style: TextStyle(fontFamily: 'SF' , fontSize: 23),),
+          ],
+        ),
       ),
     );
   }

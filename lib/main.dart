@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart';
+import 'package:test_app/feature/presentation/pages/FlipCard.dart';
 import 'package:test_app/feature/presentation/pages/weather_page.dart';
 import 'package:test_app/locator_service.dart';
 
