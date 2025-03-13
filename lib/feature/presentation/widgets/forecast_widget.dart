@@ -641,13 +641,15 @@ class _ForecastWidgetState extends State<ForecastWidget>
                     Padding(
                       padding: const EdgeInsets.only(left: 25 , right:25),
                       child: Row(
-                        children: [   WeatherInfoCard(
+                        children: [
+                          WeatherInfoCard(
                           title: "FEELS LIKE",
                           value: '${forecast.current?.feelslikec?.toInt()}',
                           unit: "°",
                           unitStyle: AppTextStyles.pressure,
                           description: temperatureMessage,
                           iconPath: "assets/images/tempture.png",
+                          backText: "How the temperature feels to the human body, factoring in wind and humidity.",
                         ),
                           const SizedBox(width: 15),
                           WeatherInfoCard(
@@ -658,6 +660,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                             description: "The gust shows sudden, strong bursts of wind",
                             iconPath: "assets/images/small_wind.png",
                             progressBar: ProgressBar(value: forecast.current?.gustkph?.toDouble() ?? 0.0),
+                            backText: "The maximum speed of sudden bursts of wind",
                           ),
 
 
@@ -667,11 +670,153 @@ class _ForecastWidgetState extends State<ForecastWidget>
                         ],
                       ),
                     ),
-                          const SizedBox(height: 13,),
+                          const SizedBox(height: 5,),
 
                     ///sunset & moonset
 
-                          const SizedBox(height: 13,),
+
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Tilt(
+                              tiltConfig: const TiltConfig(
+                                leaveCurve: Curves.easeInOutCubicEmphasized,
+                                leaveDuration: Duration(milliseconds: 600),
+                              ),
+                              lightConfig: const LightConfig(disable: true),
+                              shadowConfig: const ShadowConfig(disable: true),
+                              childLayout:  ChildLayout(
+                                outer: [
+                                  Positioned(
+                                    right: 17,
+                                    bottom: 10,
+                                    child:TiltParallax(
+                                        size: const Offset(5, 20),
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  "Moonrise",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? "",
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),),
+
+
+
+                                              ],
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Column(
+                                              children: [
+                                                const Text(
+                                                  "Moonset",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white70,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  forecast.forecast?.forecastday?[0]?.astro?.moonset ?? "",
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.white70,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),),],
+                                            )
+                                          ],
+                                        )
+                                    ),
+                                  ),
+
+                                  Positioned(
+                                    left: 20,
+                                    bottom: 10,
+                                    child:TiltParallax(
+                                        size: const Offset(5, 20),
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  "Sunrise",
+                                                  style: TextStyle(
+                                                    fontSize: 17,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? "",
+                                                  style: const TextStyle(
+                                                    fontSize: 13,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),),
+
+
+
+                                              ],
+                                            ),
+                                            SizedBox(width: 5),
+                                            Column(
+                                              children: [
+                                                const Text(
+                                                  "Sunset",
+                                                  style: TextStyle(
+                                                    fontSize: 17,
+                                                    color: Colors.white70,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  forecast.forecast?.forecastday?[0]?.astro?.sunset ?? "",
+                                                  style: const TextStyle(
+                                                    fontSize: 13,
+                                                    color: Colors.white70,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),),],
+                                            )
+                                          ],
+                                        )
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+
+                              child: Container(
+                                height: 190,
+                                width: double.infinity,
+                                decoration: const BoxDecoration(
+                                  color: Color.fromARGB(56, 1, 17, 28),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(Radius.circular(22)),
+                                  child: Image.asset(
+                                    "assets/images/sunrise.png",
+                                    fit: BoxFit.cover, // Adjust the fit as needed
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 5),
 
 
                    ///second two small widget
@@ -682,27 +827,25 @@ class _ForecastWidgetState extends State<ForecastWidget>
 
                           WeatherInfoCard(
                             title: "UV INDEX",
-                            value: '${forecast.forecast?.forecastday?.first?.day?.uv?.toString() ?? "No Data"}',
+                            value: forecast.forecast?.forecastday?.first?.day?.uv?.toString() ?? "No Data",
                             unit: "",
                             description: "Wear sunglasses to protect your eyes",
                             iconPath: "assets/images/uv_small.png",
                             progressBar: UVIndexBar(uvIndex: forecast.forecast?.forecastday?.first?.day?.uv?.toDouble() ?? 0.0),
+                            backText: "A measure of the strength of ultraviolet (UV) radiation from the sun",
                           ),
 
                           const SizedBox(width: 15),
 
                           WeatherInfoCard(
                             title: "PRESSURE",
-                            value: '${forecast.current?.pressuremb?.toString() ?? ""}',
+                            value: forecast.current?.pressuremb?.toString() ?? "",
                             unit: "mb",
                             unitStyle: AppTextStyles.mb,
                             description: "Indicating how heavy or light it is in location",
                             iconPath: "assets/images/pressure.png",
+                            backText: "The atmospheric pressure, indicating changes in weather patterns.",
                           ),
-
-
-
-
 
                         ],
                       ),
@@ -741,127 +884,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
 
 
                           const SizedBox(height: 50,),
-                          Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Tilt(
-                              tiltConfig: const TiltConfig(
-                                leaveCurve: Curves.easeInOutCubicEmphasized,
-                                leaveDuration: Duration(milliseconds: 600),
-                              ),
-                              lightConfig: const LightConfig(disable: true),
-                              shadowConfig: const ShadowConfig(disable: true),
-                              childLayout:  ChildLayout(
-                                outer: [
-                                  Positioned(
-                                    right: 20,
-                                    bottom: 5,
-                                    child:   TiltParallax(
-                                        size: const Offset(5, 20),
-                                        child: Column(
-                                          children: [
-                                            const Text(
-                                              "Moonrise",
-                                              style: TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? "",
-                                              style: const TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),),
-                                            const Text(
-                                              "Moonset",
-                                              style: TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.white70,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              forecast.forecast?.forecastday?[0]?.astro?.moonset ?? "",
-                                              style: const TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.white70,
-                                                fontWeight: FontWeight.bold,
-                                              ),),
-                                          ],
-                                        )
-                                    ),
-                                  ),
 
-                                  Positioned(
-                                    left: 20,
-                                    bottom: 5,
-                                    child:TiltParallax(
-                                        size: const Offset(5, 20),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              "Sunrise",
-                                              style: TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? "",
-                                              style: const TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),),
-                                            const Text(
-                                              "Sunset",
-                                              style: TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.white70,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              forecast.forecast?.forecastday?[0]?.astro?.sunset ?? "",
-                                              style: const TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.white70,
-                                                fontWeight: FontWeight.bold,
-                                              ),),
-
-
-                                          ],
-                                        )
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-
-                              child: Container(
-                                height: 190,
-                                width: double.infinity,
-                                decoration: const BoxDecoration(
-                                  color: Color.fromARGB(56, 1, 17, 28),
-                                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(Radius.circular(22)),
-                                  child: Image.asset(
-                                    "assets/images/sunrise.png",
-                                    fit: BoxFit.cover, // Adjust the fit as needed
-                                    height: double.infinity,
-                                    width: double.infinity,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 50,),
 
 
 
