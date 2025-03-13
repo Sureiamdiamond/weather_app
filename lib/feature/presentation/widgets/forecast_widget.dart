@@ -740,10 +740,133 @@ class _ForecastWidgetState extends State<ForecastWidget>
 
 
                           const SizedBox(height: 50,),
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Tilt(
+                              tiltConfig: const TiltConfig(
+                                leaveCurve: Curves.easeInOutCubicEmphasized,
+                                leaveDuration: Duration(milliseconds: 600),
+                              ),
+                              lightConfig: const LightConfig(disable: true),
+                              shadowConfig: const ShadowConfig(disable: true),
+                              childLayout:  ChildLayout(
+                                outer: [
+                                  Positioned(
+                                    right: 20,
+                                    bottom: 5,
+                                    child:   TiltParallax(
+                                        size: const Offset(5, 20),
+                                        child: Column(
+                                          children: [
+                                            const Text(
+                                              "Moonrise",
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? "",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),),
+                                            const Text(
+                                              "Moonset",
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.white70,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              forecast.forecast?.forecastday?[0]?.astro?.moonset ?? "",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.white70,
+                                                fontWeight: FontWeight.bold,
+                                              ),),
+                                          ],
+                                        )
+                                    ),
+                                  ),
+
+                                  Positioned(
+                                    left: 20,
+                                    bottom: 5,
+                                    child:TiltParallax(
+                                        size: const Offset(5, 20),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "Sunrise",
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? "",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),),
+                                            const Text(
+                                              "Sunset",
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color: Colors.white70,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              forecast.forecast?.forecastday?[0]?.astro?.sunset ?? "",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.white70,
+                                                fontWeight: FontWeight.bold,
+                                              ),),
+
+
+                                          ],
+                                        )
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+
+                              child: Container(
+                                height: 190,
+                                width: double.infinity,
+                                decoration: const BoxDecoration(
+                                  color: Color.fromARGB(56, 1, 17, 28),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(Radius.circular(22)),
+                                  child: Image.asset(
+                                    "assets/images/sunrise.png",
+                                    fit: BoxFit.cover, // Adjust the fit as needed
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 50,),
 
 
 
-                    ]),
+
+
+                        ]),
                   ),
                 ),
               ),
