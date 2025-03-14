@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
+import 'package:flutter_popup/flutter_popup.dart';
 import 'package:flutter_tilt/flutter_tilt.dart';
 import 'package:intl/intl.dart';
 
@@ -16,19 +17,18 @@ import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_state.
 import 'package:test_app/feature/presentation/pages/search_page.dart';
 import 'package:test_app/feature/presentation/widgets/loading_widget.dart';
 import 'package:test_app/feature/presentation/widgets/weather_info_widget.dart';
+import 'package:test_app/gen/assets.gen.dart';
+import '../pages/gemini.dart';
 import '../pages/info.dart';
 
 class ForecastWidget extends StatefulWidget {
-
   const ForecastWidget({super.key});
 
   @override
   _ForecastWidgetState createState() => _ForecastWidgetState();
 }
 
-class _ForecastWidgetState extends State<ForecastWidget>
-    with SingleTickerProviderStateMixin {
-
+class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProviderStateMixin {
   String location = 'Tehran';
   Logger logger = Logger();
 
@@ -37,23 +37,20 @@ class _ForecastWidgetState extends State<ForecastWidget>
   late Animation<double> _loadingFadeAnimation;
 
   void _fetchForecast() {
-    BlocProvider.of<ForecastBloc>(context)
-        .add(GeneralForecast(location: location, days: 7));
+    BlocProvider.of<ForecastBloc>(context).add(GeneralForecast(location: location, days: 7));
   }
 
   Future<void> _loadLocation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      location =
-          prefs.getString('location') ?? 'Tehran';
+      location = prefs.getString('location') ?? 'Tehran';
     });
     _fetchForecast();
   }
 
   Future<void> _saveLocation(String newLocation) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-        'location', newLocation);
+    await prefs.setString('location', newLocation);
   }
 
   @override
@@ -86,7 +83,6 @@ class _ForecastWidgetState extends State<ForecastWidget>
     super.dispose();
   }
 
-
   String _getDayOrNight(String localtime) {
     int hour = int.parse(localtime.split(" ")[1].split(":")[0]);
     return (hour >= 2 && hour <= 18) ? "day" : "night";
@@ -102,48 +98,36 @@ class _ForecastWidgetState extends State<ForecastWidget>
     }
   }
 
-
-  int showHour (String localtime) {
+  int showHour(String localtime) {
     int hour = int.parse(localtime.split(" ")[1].split(":")[0]);
     return hour;
   }
-
 
   String _getDate(String localtime) {
     String dateName = DateFormat('MMM d').format(DateFormat("yyyy-MM-DD").parse(localtime));
     return dateName;
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
-
-
     return BlocBuilder<ForecastBloc, ForecastState>(
       builder: (context, state) {
-
-
         if (state is ForecastLoading) {
-
           return Container(
-           color: Colors.white,
+            color: Colors.white,
             child: FadeTransition(
               opacity: _loadingFadeAnimation,
               child: const LoadingIcon(),
             ),
           );
         } else if (state is ForecastLoaded) {
-
           _fadeController.forward();
           final forecast = state.forecast;
-          showHour(forecast.location?.localtime??"00:00");
+          showHour(forecast.location?.localtime ?? "00:00");
           final String dayOrNight = _getDayOrNight(forecast.location?.localtime ?? "00:00");
           String condition = forecast.current!.condition!.text!.toLowerCase();
           final Gradient backColor = _getBackgroundGradient(
-              forecast.current?.condition?.text?.toLowerCase() ?? "sunny",
-              forecast.current?.isday ?? 2);
+              forecast.current?.condition?.text?.toLowerCase() ?? "sunny", forecast.current?.isday ?? 2);
           String dayName = _getWeekDay(forecast.location?.localtime ?? "");
           final tempC = forecast.forecast?.forecastday?.first?.hour?.first?.tempc ?? 0.0;
           final feelsLikeC = forecast.forecast?.forecastday?.first?.hour?.first?.feelslikec ?? 0.0;
@@ -162,111 +146,205 @@ class _ForecastWidgetState extends State<ForecastWidget>
                   ),
                   child: SingleChildScrollView(
                     padding: EdgeInsets.zero,
-                    child: Column(
-                        children: [
-                          const SizedBox(height: 50,),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15 , right: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(children: [
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8, right: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.location_on_outlined),
-                                      color: Colors.white,
-                                      iconSize: 35,
-                                      onPressed: () {
-
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            elevation: 0,
-                                            backgroundColor: const Color(0x234354),
-                                            content: Container(
-                                              width: 700,
-                                              height: 60,// Set the width
-                                              padding: const EdgeInsets.all(12),
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xC8042B49), // Background color
-                                                borderRadius: BorderRadius.circular(30), // Rounded corners
-                                              ),
-                                              child: Center(
-                                                child:  Text(
-                                                  'Your Chosen location is ${forecast.location?.name} - ${forecast.location?.country}',
-                                                  style: AppTextStyles.days,
-                                                ),
-                                              ),
-                                            ),
-
-                                            duration: const Duration(milliseconds: 2400),
-                                            behavior: SnackBarBehavior.floating, // Make the Snackbar float
-                                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20), // Space from the bottom
-                                          ),
-                                        );
-
-                                      },
-                                    ),
-                                    Text(forecast.location?.name ?? "", style: AppTextStyles.cityName,),
-                                  ],
-                                ),
-                                IconButton(
-                                  onPressed: () async {
-                                    final result = await Navigator.of(context).push(
+                                CustomPopup(
+                                  contentPadding: const EdgeInsets.all(10),
+                                  showArrow: true,
+                                  content: SizedBox(
+                                    width: 200,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                         InkWell(
+                                           onTap: ()=> Navigator.of(context).push(
                                       PageRouteBuilder(
                                         pageBuilder: (context, animation, secondaryAnimation) {
-                                          return const SearchPage();
-                                        },
-                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                          const begin = Offset(0.0, 1.0);
-                                          const end = Offset.zero;
-                                          const curve = Curves.easeInOut;
-                                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                                          var offsetAnimation = animation.drive(tween);
+                                          return ChatScreen();
+                                        })),
+                                           child: Row(
 
-                                          return SlideTransition(
-                                            position: offsetAnimation,
-                                            child: child,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                    if (result != null) {
-                                      setState(() {
-                                        location = result;
-                                        showDialog(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (context) {
-                                            return const Scaffold(
-                                              body: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Center(
-                                                    child: CircularProgressIndicator(color: Colors.black45),
-                                                  ),
-                                                  SizedBox(height: 12,),
-                                                  Text("Loading", style: TextStyle(fontFamily: "SF", fontWeight: FontWeight.bold , color: Colors.black45),)
-                                                ],
+                                            children: [
+                                                Image.asset(Assets.images.bot.path , height: 35,),
+
+                                              const SizedBox(
+                                                width: 2,
+                                              ),
+                                              const Padding(
+                                                padding: EdgeInsets.only(top: 8.0),
+                                                child: Text("Gemini", style: AppTextStyles.search,),
+                                              )
+                                            ],
+                                                                                   ),
+                                         ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        InkWell(
+                                          onTap: () async {
+                                            await Navigator.of(context).push(
+                                              PageRouteBuilder(
+                                                pageBuilder: (context, animation, secondaryAnimation) {
+                                                  return const InfoScreen();
+                                                },
+                                                transitionsBuilder:
+                                                    (context, animation, secondaryAnimation, child) {
+                                                  const begin = Offset(0.0, 1.0);
+                                                  const end = Offset.zero;
+                                                  const curve = Curves.easeInOut;
+                                                  var tween = Tween(begin: begin, end: end)
+                                                      .chain(CurveTween(curve: curve));
+                                                  var offsetAnimation = animation.drive(tween);
+
+                                                  return SlideTransition(
+                                                    position: offsetAnimation,
+                                                    child: child,
+                                                  );
+                                                },
                                               ),
                                             );
                                           },
-                                        );
-                                      });
-                                      await _saveLocation(result);
-                                      _loadLocation();
-                                      await Future.delayed(const Duration(milliseconds: 5500));
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                  icon: const Icon(CupertinoIcons.search),
-                                  color: Colors.white,
-                                  iconSize: 35,
+                                          child: const Row(
+                                            children: [
+                                              Icon(
+                                                Icons.info_outline_rounded,
+                                                size: 35,
+                                              ),
+                                              SizedBox(
+                                                width: 2,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(left: 2.0),
+                                                child: Text("Info" , style: AppTextStyles.search,),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.menu_rounded,
+                                    size: 36,
+                                    color: Colors.white,
+                                  ),
                                 ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          elevation: 0,
+                                          backgroundColor: const Color(0x234354),
+                                          content: Container(
+                                            width: 700,
+                                            height: 60,
+                                            // Set the width
+                                            padding: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xC8042B49), // Background color
+                                              borderRadius: BorderRadius.circular(30), // Rounded corners
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                'Your Chosen location is ${forecast.location?.name} - ${forecast.location?.country}',
+                                                style: AppTextStyles.days,
+                                              ),
+                                            ),
+                                          ),
+
+                                          duration: const Duration(milliseconds: 2400),
+                                          behavior: SnackBarBehavior.floating,
+                                          // Make the Snackbar float
+                                          margin:
+                                              const EdgeInsets.fromLTRB(0, 0, 0, 20), // Space from the bottom
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      forecast.location?.name ?? "",
+                                      style: AppTextStyles.cityName,
+                                    )),
                               ],
                             ),
-                          ),
+                            IconButton(
+                              onPressed: () async {
+                                final result = await Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation, secondaryAnimation) {
+                                      return const SearchPage();
+                                    },
+                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      const begin = Offset(0.0, 1.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.easeInOut;
+                                      var tween =
+                                          Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                      var offsetAnimation = animation.drive(tween);
 
-                    Padding(
+                                      return SlideTransition(
+                                        position: offsetAnimation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                                if (result != null) {
+                                  setState(() {
+                                    location = result;
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) {
+                                        return const Scaffold(
+                                          body: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: CircularProgressIndicator(color: Colors.black45),
+                                              ),
+                                              SizedBox(
+                                                height: 12,
+                                              ),
+                                              Text(
+                                                "Loading",
+                                                style: TextStyle(
+                                                    fontFamily: "SF",
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black45),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  });
+                                  await _saveLocation(result);
+                                  _loadLocation();
+                                  await Future.delayed(const Duration(milliseconds: 5500));
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              icon: const Icon(CupertinoIcons.search),
+                              color: Colors.white,
+                              iconSize: 35,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Padding(
                         padding: const EdgeInsets.all(25.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -280,10 +358,10 @@ class _ForecastWidgetState extends State<ForecastWidget>
                               child: () {
                                 // Conditions grouped together
                                 List<String> cloudyConditions = ["cloud", "wind", "overcast", "fog", "mist"];
-                                List<String> rainyConditions = ["rain" , "drizzle"];
-                                List<String> snowyConditions = ["snow" , "sleet" , "pellets"];
+                                List<String> rainyConditions = ["rain", "drizzle"];
+                                List<String> snowyConditions = ["snow", "sleet", "pellets"];
                                 List<String> thunderConditions = ["thunder", "storm"];
-                                List<String> clearConditions = ["clear" , "sunny"];
+                                List<String> clearConditions = ["clear", "sunny"];
                                 List<String> mistyConditions = ["mist"];
 
                                 if (cloudyConditions.any((c) => condition.contains(c))) {
@@ -345,10 +423,10 @@ class _ForecastWidgetState extends State<ForecastWidget>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(dayName,style: AppTextStyles.lightTexts),
+                                Text(dayName, style: AppTextStyles.lightTexts),
                                 const Padding(
-                                  padding: EdgeInsets.only(left: 5 , right: 5),
-                                  child: Text('|',  style: AppTextStyles.lightTexts),
+                                  padding: EdgeInsets.only(left: 5, right: 5),
+                                  child: Text('|', style: AppTextStyles.lightTexts),
                                 ),
                                 Text(forecast.current?.condition?.text ?? "",
                                     style: AppTextStyles.lightTexts),
@@ -359,45 +437,52 @@ class _ForecastWidgetState extends State<ForecastWidget>
                             Padding(
                               padding: const EdgeInsets.only(left: 32.0),
                               child: Text(
-                                '${forecast.current?.tempc?.toInt()?? '--'}°',
+                                '${forecast.current?.tempc?.toInt() ?? '--'}°',
                                 style: AppTextStyles.temperature,
                               ),
                             ),
 
-                             ///Ttile and Max Min
-                             const Text(
-                                 "Precipitations" , style: AppTextStyles.lightTexts),
-                              Text(
-                                'Min: ${forecast.forecast?.forecastday?.first?.day?.mintempc?.toInt()}°   Max: ${forecast.forecast?.forecastday?.first?.day?.maxtempc?.toInt()  }° ',style: AppTextStyles.lightTexts),
+                            ///Ttile and Max Min
+                            const Text("Precipitations", style: AppTextStyles.lightTexts),
+                            Text(
+                                'Min: ${forecast.forecast?.forecastday?.first?.day?.mintempc?.toInt()}°   Max: ${forecast.forecast?.forecastday?.first?.day?.maxtempc?.toInt()}° ',
+                                style: AppTextStyles.lightTexts),
 
-                            const SizedBox(height: 40,),
+                            const SizedBox(
+                              height: 40,
+                            ),
+
                             /// small (first) circular radius container
                             Bounceable(
-                              onTap: (){},
+                              onTap: () {},
                               child: Container(
                                 height: 45,
                                 width: double.infinity,
                                 decoration: const BoxDecoration(
                                     color: Color.fromARGB(56, 1, 17, 28),
-                                    borderRadius: BorderRadius.all(Radius.circular(20))
-                                ),
-                                child:  Row(
+                                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                                child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
-                                    Row(children: [
-                                      SvgPicture.asset('assets/images/Union.svg' , height: 16,color: Colors.white,),
-                                      const SizedBox(width: 5,),
-                                      Text(
-                                        '${forecast.current?.cloud.toString()}%',
-                                        style: AppTextStyles.subheading,
-                                      ),
-
-
-                                    ],),
                                     Row(
                                       children: [
-
-                                        SvgPicture.asset('assets/images/humidity_bar.svg') ,
+                                        SvgPicture.asset(
+                                          'assets/images/Union.svg',
+                                          height: 16,
+                                          color: Colors.white,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          '${forecast.current?.cloud.toString()}%',
+                                          style: AppTextStyles.subheading,
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        SvgPicture.asset('assets/images/humidity_bar.svg'),
                                         Text(
                                           '${forecast.current?.humidity.toString()}%',
                                           style: AppTextStyles.subheading,
@@ -407,12 +492,16 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                     Row(
                                       children: [
                                         SvgPicture.asset('assets/images/wind_bar.svg'),
-                                        const SizedBox(width: 2,),
+                                        const SizedBox(
+                                          width: 2,
+                                        ),
                                         Text(
                                           '${forecast.current?.windkph.toString()}',
                                           style: AppTextStyles.subheading,
                                         ),
-                                        const SizedBox(width: 4,),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
                                         const Text(
                                           'km/h',
                                           style: AppTextStyles.format,
@@ -424,33 +513,38 @@ class _ForecastWidgetState extends State<ForecastWidget>
                               ),
                             ),
 
-                            const SizedBox(height: 20,),
+                            const SizedBox(
+                              height: 20,
+                            ),
+
                             /// big (second) circular radius container
                             Bounceable(
-                              onTap: (){},
+                              onTap: () {},
                               child: Container(
                                 height: 200,
                                 width: double.infinity,
                                 decoration: const BoxDecoration(
                                     color: Color.fromARGB(56, 1, 17, 28),
-                                    borderRadius: BorderRadius.all(Radius.circular(20))
-                                ),
-                                child:  Column(
+                                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                                child: Column(
                                   children: [
                                     /// Date
                                     Padding(
-                                      padding: const EdgeInsets.only(top : 13.0 , left: 15 , right: 15),
+                                      padding: const EdgeInsets.only(top: 13.0, left: 15, right: 15),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text("Today" , style: AppTextStyles.today),
-                                          Text(_getDate(forecast.location?.localtime?.split(" ")[0]?? "00:00") , style: AppTextStyles.date,),
-
-
+                                          const Text("Today", style: AppTextStyles.today),
+                                          Text(
+                                            _getDate(forecast.location?.localtime?.split(" ")[0] ?? "00:00"),
+                                            style: AppTextStyles.date,
+                                          ),
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(height: 10,),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
                                     SizedBox(
                                       height: 138,
                                       child: ListView.builder(
@@ -458,10 +552,13 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                         scrollDirection: Axis.horizontal,
                                         itemCount: forecast.forecast?.forecastday?.first?.hour?.length ?? 0,
                                         itemBuilder: (context, index) {
-                                          final hourData = forecast.forecast?.forecastday?.first?.hour?[index];
+                                          final hourData =
+                                              forecast.forecast?.forecastday?.first?.hour?[index];
                                           final time = hourData?.time?.split(" ").last ?? "No Data";
-                                          final temp = hourData?.tempc?.toInt() ?? "N/A"; // Temperature in Celsius
-                                          final iconUrl = "https:${hourData?.condition?.icon ?? ""}"; // Weather icon URL
+                                          final temp =
+                                              hourData?.tempc?.toInt() ?? "N/A"; // Temperature in Celsius
+                                          final iconUrl =
+                                              "https:${hourData?.condition?.icon ?? ""}"; // Weather icon URL
 
                                           return AnimatedContainer(
                                             duration: const Duration(milliseconds: 300),
@@ -503,10 +600,7 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                                 Text(
                                                   time,
                                                   style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 14,
-                                                    fontFamily: 'SP'
-                                                  ),
+                                                      color: Colors.white, fontSize: 14, fontFamily: 'SP'),
                                                 ),
                                               ],
                                             ),
@@ -514,17 +608,18 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                         },
                                       ),
                                     ),
-
-
                                   ],
                                 ),
                               ),
                             ),
 
-                            const SizedBox(height: 20,),
+                            const SizedBox(
+                              height: 20,
+                            ),
+
                             /// medium (third) circular radius container
                             Bounceable(
-                              onTap: (){},
+                              onTap: () {},
                               child: Container(
                                 height: 180,
                                 width: double.infinity,
@@ -537,35 +632,42 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                     const Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(top : 13.0 , left: 15 , right: 15),
-                                        child: Text("Next Forecast" ,  style: AppTextStyles.today),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top : 13.0 , left: 13 , right: 13),
-                                        child: Icon(Icons.calendar_month_outlined , color: Colors.white,size: 26,),
-                                      )
-                                    ],),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 13.0, left: 15, right: 15),
+                                          child: Text("Next Forecast", style: AppTextStyles.today),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 13.0, left: 13, right: 13),
+                                          child: Icon(
+                                            Icons.calendar_month_outlined,
+                                            color: Colors.white,
+                                            size: 26,
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                     SizedBox(
                                       height: 125,
                                       child: ListView.builder(
                                         padding: EdgeInsets.zero,
                                         scrollDirection: Axis.vertical,
-                                        itemCount: forecast.forecast?.forecastday?.length ?? 0, // 3 days of forecast
+                                        itemCount: forecast.forecast?.forecastday?.length ?? 0,
+                                        // 3 days of forecast
                                         itemBuilder: (context, index) {
                                           final dayData = forecast.forecast?.forecastday?[index];
-                                          final date = dayData?.date != null ? _getDate(dayData!.date!) : "No Date";
+                                          final date =
+                                              dayData?.date != null ? _getDate(dayData!.date!) : "No Date";
 
                                           final minTemp = dayData?.day?.mintempc?.toInt() ?? "N/A";
                                           final maxTemp = dayData?.day?.maxtempc?.toInt() ?? "N/A";
-                                          final iconUrl = "https:${dayData?.day?.condition?.icon ?? ""}"; // Weather icon URL
+                                          final iconUrl =
+                                              "https:${dayData?.day?.condition?.icon ?? ""}"; // Weather icon URL
 
                                           return AnimatedContainer(
                                             duration: const Duration(milliseconds: 300),
                                             width: 200,
                                             margin: const EdgeInsets.symmetric(horizontal: 8),
                                             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
@@ -588,7 +690,6 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                                 Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
-
                                                     Image.network(
                                                       iconUrl,
                                                       width: 44,
@@ -608,14 +709,14 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   crossAxisAlignment: CrossAxisAlignment.end,
                                                   children: [
-                                                    Text( "$maxTemp°C",
-
+                                                    Text(
+                                                      "$maxTemp°C",
                                                       style: const TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                         color: Colors.white,
                                                         fontSize: 14,
-                                                      ),),
-
+                                                      ),
+                                                    ),
                                                     Text(
                                                       "$minTemp°C",
                                                       style: const TextStyle(
@@ -635,260 +736,219 @@ class _ForecastWidgetState extends State<ForecastWidget>
                                 ),
                               ),
                             ),
-
                           ],
                         ),
                       ),
 
-
-                    ///first two small widget
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25 , right:25),
-                      child: Row(
-                        children: [
-                          WeatherInfoCard(
-                          title: "FEELS LIKE",
-                          value: '${forecast.current?.feelslikec?.toInt()}',
-                          unit: "°",
-                          unitStyle: AppTextStyles.pressure,
-                          description: temperatureMessage,
-                          iconPath: "assets/images/tempture.png",
-                          backText: "How the temperature feels to the human body, factoring in wind and humidity.",
+                      ///first two small widget
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25, right: 25),
+                        child: Row(
+                          children: [
+                            WeatherInfoCard(
+                              title: "FEELS LIKE",
+                              value: '${forecast.current?.feelslikec?.toInt()}',
+                              unit: "°",
+                              unitStyle: AppTextStyles.pressure,
+                              description: temperatureMessage,
+                              iconPath: "assets/images/tempture.png",
+                              backText:
+                                  "How the temperature feels to the human body, factoring in wind and humidity.",
+                            ),
+                            const SizedBox(width: 15),
+                            WeatherInfoCard(
+                              title: "GUST",
+                              value: '${forecast.current?.gustkph}',
+                              unitStyle: AppTextStyles.kph,
+                              unit: "Kp/h",
+                              description: "The gust shows sudden, strong bursts of wind",
+                              iconPath: "assets/images/small_wind.png",
+                              progressBar: ProgressBar(value: forecast.current?.gustkph?.toDouble() ?? 0.0),
+                              backText: "The maximum speed of sudden bursts of wind",
+                            ),
+                          ],
                         ),
-                          const SizedBox(width: 15),
-                          WeatherInfoCard(
-                            title: "GUST",
-                            value: '${forecast.current?.gustkph}',
-                            unitStyle: AppTextStyles.kph,
-                            unit: "Kp/h",
-                            description: "The gust shows sudden, strong bursts of wind",
-                            iconPath: "assets/images/small_wind.png",
-                            progressBar: ProgressBar(value: forecast.current?.gustkph?.toDouble() ?? 0.0),
-                            backText: "The maximum speed of sudden bursts of wind",
-                          ),
-
-
-
-
-
-                        ],
                       ),
-                    ),
-                          const SizedBox(height: 5,),
+                      const SizedBox(
+                        height: 5,
+                      ),
 
-                    ///sunset & moonset
-                          Bounceable(
-                            onTap: (){},
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 20 , right: 25 , left: 25 , bottom: 20),
-                              child: Tilt(
-                                tiltConfig: const TiltConfig(
-                                  leaveCurve: Curves.easeInOutCubicEmphasized,
-                                  leaveDuration: Duration(milliseconds: 600),
-                                ),
-                                lightConfig: const LightConfig(disable: true),
-                                shadowConfig: const ShadowConfig(disable: true),
-                                childLayout:  ChildLayout(
-                                  outer: [
-                                    Positioned(
-                                      right: 17,
-                                      bottom: 10,
-                                      child:TiltParallax(
-                                          size: const Offset(5, 20),
-                                          child: Row(
+                      ///sunset & moonset
+                      Bounceable(
+                        onTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 20, right: 25, left: 25, bottom: 20),
+                          child: Tilt(
+                            tiltConfig: const TiltConfig(
+                              leaveCurve: Curves.easeInOutCubicEmphasized,
+                              leaveDuration: Duration(milliseconds: 600),
+                            ),
+                            lightConfig: const LightConfig(disable: true),
+                            shadowConfig: const ShadowConfig(disable: true),
+                            childLayout: ChildLayout(
+                              outer: [
+                                Positioned(
+                                  right: 17,
+                                  bottom: 10,
+                                  child: TiltParallax(
+                                      size: const Offset(5, 20),
+                                      child: Row(
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  const Text(
-                                                    "Moonrise",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? "",
-                                                    style: const TextStyle(
-                                                      fontSize: 13,
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),),
-
-
-
-                                                ],
+                                              const Text(
+                                                "Moonrise",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                              const SizedBox(width: 5),
-                                              Column(
-                                                children: [
-                                                  const Text(
-                                                    "Moonset",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.white70,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    forecast.forecast?.forecastday?[0]?.astro?.moonset ?? "",
-                                                    style: const TextStyle(
-                                                      fontSize: 13,
-                                                      color: Colors.white70,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),),],
-                                              )
+                                              Text(
+                                                forecast.forecast?.forecastday?[0]?.astro?.moonrise ?? "",
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(width: 5),
+                                          Column(
+                                            children: [
+                                              const Text(
+                                                "Moonset",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.white70,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                forecast.forecast?.forecastday?[0]?.astro?.moonset ?? "",
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.white70,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                             ],
                                           )
-                                      ),
-                                    ),
-
-                                    Positioned(
-                                      left: 20,
-                                      bottom: 10,
-                                      child:TiltParallax(
-                                          size: const Offset(5, 20),
-                                          child: Row(
+                                        ],
+                                      )),
+                                ),
+                                Positioned(
+                                  left: 20,
+                                  bottom: 10,
+                                  child: TiltParallax(
+                                      size: const Offset(5, 20),
+                                      child: Row(
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  const Text(
-                                                    "Sunrise",
-                                                    style: TextStyle(
-                                                      fontSize: 17,
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? "",
-                                                    style: const TextStyle(
-                                                      fontSize: 13,
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),),
-
-
-
-                                                ],
+                                              const Text(
+                                                "Sunrise",
+                                                style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                              const SizedBox(width: 5),
-                                              Column(
-                                                children: [
-                                                  const Text(
-                                                    "Sunset",
-                                                    style: TextStyle(
-                                                      fontSize: 17,
-                                                      color: Colors.white70,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    forecast.forecast?.forecastday?[0]?.astro?.sunset ?? "",
-                                                    style: const TextStyle(
-                                                      fontSize: 13,
-                                                      color: Colors.white70,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),),],
-                                              )
+                                              Text(
+                                                forecast.forecast?.forecastday?[0]?.astro?.sunrise ?? "",
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(width: 5),
+                                          Column(
+                                            children: [
+                                              const Text(
+                                                "Sunset",
+                                                style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.white70,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                forecast.forecast?.forecastday?[0]?.astro?.sunset ?? "",
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.white70,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                             ],
                                           )
-                                      ),
-                                    ),
-                                  ],
+                                        ],
+                                      )),
                                 ),
-
-
-                                child: Container(
-                                  height: 190,
+                              ],
+                            ),
+                            child: Container(
+                              height: 190,
+                              width: double.infinity,
+                              decoration: const BoxDecoration(
+                                color: Color.fromARGB(56, 1, 17, 28),
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(Radius.circular(22)),
+                                child: Image.asset(
+                                  "assets/images/sunrise.png",
+                                  fit: BoxFit.cover, // Adjust the fit as needed
+                                  height: double.infinity,
                                   width: double.infinity,
-                                  decoration: const BoxDecoration(
-                                    color: Color.fromARGB(56, 1, 17, 28),
-                                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.all(Radius.circular(22)),
-                                    child: Image.asset(
-                                      "assets/images/sunrise.png",
-                                      fit: BoxFit.cover, // Adjust the fit as needed
-                                      height: double.infinity,
-                                      width: double.infinity,
-                                    ),
-                                  ),
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 5),
-
-
-                   ///second two small widget
-                          Padding(
-                      padding: const EdgeInsets.only(left: 25 , right:25),
-                      child: Row(
-                        children: [
-
-                          WeatherInfoCard(
-                            title: "UV INDEX",
-                            value: forecast.forecast?.forecastday?.first?.day?.uv?.toString() ?? "No Data",
-                            unit: "",
-                            description: "Wear sunglasses to protect your eyes",
-                            iconPath: "assets/images/uv_small.png",
-                            progressBar: UVIndexBar(uvIndex: forecast.forecast?.forecastday?.first?.day?.uv?.toDouble() ?? 0.0),
-                            backText: "A measure of the strength of ultraviolet (UV) radiation from the sun",
-                          ),
-
-                          const SizedBox(width: 15),
-
-                          WeatherInfoCard(
-                            title: "PRESSURE",
-                            value: forecast.current?.pressuremb?.toString() ?? "",
-                            unit: "mb",
-                            unitStyle: AppTextStyles.mb,
-                            description: "Indicating how heavy or light it is in location",
-                            iconPath: "assets/images/pressure.png",
-                            backText: "The atmospheric pressure, indicating changes in weather patterns.",
-                          ),
-
-                        ],
+                        ),
                       ),
-                    ),
-                      const SizedBox(height: 40,),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0x35040404),
-                              borderRadius: BorderRadius.circular(40)
+                      const SizedBox(height: 5),
+
+                      ///second two small widget
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25, right: 25),
+                        child: Row(
+                          children: [
+                            WeatherInfoCard(
+                              title: "UV INDEX",
+                              value: forecast.forecast?.forecastday?.first?.day?.uv?.toString() ?? "No Data",
+                              unit: "",
+                              description: "Wear sunglasses to protect your eyes",
+                              iconPath: "assets/images/uv_small.png",
+                              progressBar: UVIndexBar(
+                                  uvIndex: forecast.forecast?.forecastday?.first?.day?.uv?.toDouble() ?? 0.0),
+                              backText:
+                                  "A measure of the strength of ultraviolet (UV) radiation from the sun",
                             ),
-                              child: IconButton(
-                                  onPressed: () async {
-                                   await Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) {
-                                          return const InfoScreen();
-                                        },
-                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                          const begin = Offset(0.0, 1.0);
-                                          const end = Offset.zero;
-                                          const curve = Curves.easeInOut;
-                                          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                                          var offsetAnimation = animation.drive(tween);
+                            const SizedBox(width: 15),
+                            WeatherInfoCard(
+                              title: "PRESSURE",
+                              value: forecast.current?.pressuremb?.toString() ?? "",
+                              unit: "mb",
+                              unitStyle: AppTextStyles.mb,
+                              description: "Indicating how heavy or light it is in location",
+                              iconPath: "assets/images/pressure.png",
+                              backText: "The atmospheric pressure, indicating changes in weather patterns.",
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
 
-                                          return SlideTransition(
-                                            position: offsetAnimation,
-                                            child: child,
-                                          );
-                                        },
-                                      ),
-                                    );
-
-                                  },
-                                  icon: const Icon(Icons.info_outline_rounded , size: 30, color: Colors.white,))),
-                          const Text("Info" , style: AppTextStyles.lightTexts,),
-                          const SizedBox(height: 50,),
-
-                        ]),
+                    ]),
                   ),
                 ),
               ),
@@ -963,7 +1023,7 @@ Gradient _getBackgroundGradient(String description, int isDay) {
   if (isDay == 1) {
     if (description.contains("sunny")) {
       return const LinearGradient(
-        colors: [ Color(0xff2bd6ed),Color(0xff33AADD),Color(0xff00a6ff)],
+        colors: [Color(0xff2bd6ed), Color(0xff33AADD), Color(0xff00a6ff)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         // stops: [0,47,100]
@@ -973,9 +1033,13 @@ Gradient _getBackgroundGradient(String description, int isDay) {
         description.contains("mist") ||
         description.contains("cloud") ||
         description.contains("fog")) {
-      return  const LinearGradient(
-        colors: [Color.fromARGB(255, 86, 89, 90), Color.fromARGB(255, 90, 87, 87) ,Color.fromARGB(
-            255, 106, 151, 186),Color.fromARGB(255, 68, 139, 202)  ],
+      return const LinearGradient(
+        colors: [
+          Color.fromARGB(255, 86, 89, 90),
+          Color.fromARGB(255, 90, 87, 87),
+          Color.fromARGB(255, 106, 151, 186),
+          Color.fromARGB(255, 68, 139, 202)
+        ],
         begin: Alignment.bottomRight,
         end: Alignment.topLeft,
       );
@@ -983,7 +1047,7 @@ Gradient _getBackgroundGradient(String description, int isDay) {
         description.contains("drizzle") ||
         description.contains("thundery")) {
       return const LinearGradient(
-        colors: [ Color(0xff061f45),Color(0xff1453c6),Color(0xff0a4ecf)],
+        colors: [Color(0xff061f45), Color(0xff1453c6), Color(0xff0a4ecf)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
@@ -998,12 +1062,11 @@ Gradient _getBackgroundGradient(String description, int isDay) {
     }
   } else {
     return const LinearGradient(
-      colors: [Color.fromARGB(255, 1, 37, 66),Color.fromARGB(255, 4, 83, 149)],
+      colors: [Color.fromARGB(255, 1, 37, 66), Color.fromARGB(255, 4, 83, 149)],
       begin: Alignment.bottomRight,
       end: Alignment.topLeft,
     );
   }
-
 
   return const LinearGradient(
     colors: [Colors.blueGrey, Colors.black],
@@ -1013,8 +1076,6 @@ Gradient _getBackgroundGradient(String description, int isDay) {
 }
 
 class AppTextStyles {
-
-
   static const TextStyle cityName = TextStyle(
     fontSize: 35,
     fontWeight: FontWeight.w700,
@@ -1041,6 +1102,26 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     fontFamily: 'Sahel',
     color: Colors.black,
+  );
+
+  static const TextStyle gemini = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Sahel',
+    color: Colors.black,
+  );
+
+  static const TextStyle geminiFarsi = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Sahel',
+    color: Colors.white,
+  );
+  static TextStyle geminiFarsiBlack = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'Sahel',
+    color: Colors.grey[700],
   );
   static const TextStyle SubttileinfoStyle = TextStyle(
     fontSize: 15,
@@ -1069,6 +1150,14 @@ class AppTextStyles {
     color: Colors.white,
   );
 
+  static const TextStyle info = TextStyle(
+    fontSize: 25,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'SF',
+    color: Colors.white,
+  );
+
+
   static const TextStyle search = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w500,
@@ -1082,12 +1171,8 @@ class AppTextStyles {
     color: Color(0xe5c7e9ff),
   );
 
-
-
-
-  static const TextStyle lightTexts = TextStyle(
-      fontFamily: 'SF' , fontWeight: FontWeight.w500 , color: Colors.white ,fontSize: 15
-  );
+  static const TextStyle lightTexts =
+      TextStyle(fontFamily: 'SF', fontWeight: FontWeight.w500, color: Colors.white, fontSize: 15);
 
   static const TextStyle timeSmall = TextStyle(
     fontSize: 13,
@@ -1098,7 +1183,6 @@ class AppTextStyles {
   static const TextStyle subheading = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w500,
-
     fontFamily: 'SF',
     color: Colors.white,
   );
@@ -1109,55 +1193,35 @@ class AppTextStyles {
     color: Colors.white,
   );
 
-  static const TextStyle temperatureSmall = TextStyle(
-    fontSize: 60,
-    fontFamily: 'SF',
-    color:Color(0xe5c7e9ff)
-  );
-  static const TextStyle gust = TextStyle(
-      fontSize: 50,
-      fontWeight: FontWeight.w500,
-      fontFamily: 'SF',
-      color:Color(0xe5c7e9ff)
-  );
+  static const TextStyle temperatureSmall =
+      TextStyle(fontSize: 60, fontFamily: 'SF', color: Color(0xe5c7e9ff));
+  static const TextStyle gust =
+      TextStyle(fontSize: 50, fontWeight: FontWeight.w500, fontFamily: 'SF', color: Color(0xe5c7e9ff));
 
   static const TextStyle smallText = TextStyle(
-      fontSize: 12.5,
-      fontFamily: 'SF',
-      color:Color(0xe5c7e9ff),
-
+    fontSize: 12.5,
+    fontFamily: 'SF',
+    color: Color(0xe5c7e9ff),
   );
   static const TextStyle mb = TextStyle(
-      fontSize: 13,
-      fontFamily: 'SF',
-      color:Color(0xe5c7e9ff),
+    fontSize: 13,
+    fontFamily: 'SF',
+    color: Color(0xe5c7e9ff),
     fontWeight: FontWeight.w600,
-
   );
 
-
-  static const TextStyle pressure = TextStyle(
-      fontSize: 40,
-      fontFamily: 'SF',
-      fontWeight: FontWeight.w500,
-      color:Color(0xe5c7e9ff)
-  );
-  static const TextStyle kph = TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.w500,
-      fontFamily: 'SF',
-      color:Color(0xe5c7e9ff)
-  );
+  static const TextStyle pressure =
+      TextStyle(fontSize: 40, fontFamily: 'SF', fontWeight: FontWeight.w500, color: Color(0xe5c7e9ff));
+  static const TextStyle kph =
+      TextStyle(fontSize: 20, fontWeight: FontWeight.w500, fontFamily: 'SF', color: Color(0xe5c7e9ff));
 
   static const TextStyle days = TextStyle(
     fontSize: 17,
     fontWeight: FontWeight.w500,
-
     fontFamily: 'SF',
     color: Colors.white,
   );
 }
-
 
 Widget ProgressBar({required double value}) {
   double progress = (value.clamp(0, 70)) / 70;
@@ -1186,7 +1250,6 @@ Widget ProgressBar({required double value}) {
     width: 150,
     height: 6,
     decoration: BoxDecoration(
-
       borderRadius: BorderRadius.circular(10),
       color: const Color(0x25021C2E), // Background color
     ),
@@ -1201,7 +1264,6 @@ Widget ProgressBar({required double value}) {
             ),
           ),
         ),
-
       ],
     ),
   );
@@ -1224,7 +1286,6 @@ Widget UVIndexBar({required double uvIndex}) {
   return Container(
     width: 150,
     height: 6,
-
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(3),
       gradient: LinearGradient(

@@ -25,6 +25,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/Union.svg
   String get union => 'assets/images/Union.svg';
 
+  /// File path: assets/images/bot.png
+  AssetGenImage get bot => const AssetGenImage('assets/images/bot.png');
+
   /// File path: assets/images/cloud_bar.svg
   String get cloudBar => 'assets/images/cloud_bar.svg';
 
@@ -47,6 +50,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/day_wind.png
   AssetGenImage get dayWind =>
       const AssetGenImage('assets/images/day_wind.png');
+
+  /// File path: assets/images/gemini.png
+  AssetGenImage get gemini => const AssetGenImage('assets/images/gemini.png');
 
   /// File path: assets/images/github.png
   AssetGenImage get github => const AssetGenImage('assets/images/github.png');
@@ -106,12 +112,14 @@ class $AssetsImagesGen {
         moon,
         sun,
         union,
+        bot,
         cloudBar,
         dayClouds,
         dayRain,
         daySnow,
         dayStormThunder,
         dayWind,
+        gemini,
         github,
         humidityBarPng,
         humidityBarSvg,

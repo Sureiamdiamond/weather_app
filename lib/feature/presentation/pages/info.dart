@@ -12,9 +12,10 @@ class InfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Info Screen'),
+        backgroundColor: Color(0xff045395),
+        title:  Text('Info Screen' , style: AppTextStyles.info,),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back , color: Colors.white,size: 28,),
           onPressed: () {
             Navigator.pop(context); // This will navigate back to the previous screen
           },

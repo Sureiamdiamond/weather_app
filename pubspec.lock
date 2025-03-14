@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.0"
+  after_layout:
+    dependency: transitive
+    description:
+      name: after_layout
+      sha256: "95a1cb2ca1464f44f14769329fbf15987d20ab6c88f8fc5d359bd362be625f29"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   analyzer:
     dependency: transitive
     description:
@@ -217,6 +225,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  contextmenu:
+    dependency: "direct main"
+    description:
+      name: contextmenu
+      sha256: e0c7d60e2fc9f316f5b03f5fe2c0f977d65125345d1a1f77eea02be612e32d0c
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   convert:
     dependency: transitive
     description:
@@ -273,6 +289,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
+  dio:
+    dependency: transitive
+    description:
+      name: dio
+      sha256: "253a18bbd4851fecba42f7343a1df3a9a4c1d31a2c1b37e221086b4fa8c8dbc9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.8.0+1"
+  dio_web_adapter:
+    dependency: transitive
+    description:
+      name: dio_web_adapter
+      sha256: "7586e476d70caecaf1686d21eee7247ea43ef5c345eab9e0cc3583ff13378d78"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   envied:
     dependency: "direct main"
     description:
@@ -358,6 +390,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.6"
+  flutter_gemini:
+    dependency: "direct main"
+    description:
+      name: flutter_gemini
+      sha256: b7264b1d19acc4b1a5628a0e26c0976aa1fb948f0d3243bc3510ff51e09476b7
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   flutter_gen_core:
     dependency: transitive
     description:
@@ -382,6 +422,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  flutter_popup:
+    dependency: "direct main"
+    description:
+      name: flutter_popup
+      sha256: "8f93cb4ec7341330ee585b4624ac6596f02587aaefc47297344cb7b5af26aa07"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.4"
   flutter_svg:
     dependency: "direct main"
     description:
