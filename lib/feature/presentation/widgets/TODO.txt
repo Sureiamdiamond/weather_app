@@ -1,10 +1,6 @@
 
-
-
 splash screen
-locale the app persian language?
-test speech if doesnt work remove it
-
+add copy button for gemini response
 
 
 

@@ -12,7 +12,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   List<Map<String, dynamic>> messages = [];
-  final String apiKey = 'AIzaSyD3ZmBeQeBYEPv1PV-BeUVNm_I2t_MrU54';
+  final String apiKey = 'Your key';
   bool isLoading = false;
 
   // Add a ScrollController
