@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_event.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_state.dart';
@@ -18,42 +17,13 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   Logger logger = Logger();
   final TextEditingController _controller = TextEditingController();
-  late stt.SpeechToText _speech;
-  bool _isListening = false;
 
   @override
   void initState() {
     super.initState();
-    _speech = stt.SpeechToText();
-    _controller.addListener(() {
-      setState(() {});
-    });
   }
 
-  void _startListening() async {
-    bool available = await _speech.initialize(
-      onStatus: (status) => logger.i("Speech status: $status"),
-      onError: (error) => logger.e("Speech error: $error"),
-    );
 
-    if (available) {
-      setState(() => _isListening = true);
-      _speech.listen(
-        onResult: (result) {
-          setState(() {
-            _controller.text = result.recognizedWords;
-          });
-        },
-      );
-    } else {
-      logger.e("Speech recognition is not available");
-    }
-  }
-
-  void _stopListening() {
-    setState(() => _isListening = false);
-    _speech.stop();
-  }
 
   @override
   Widget build(BuildContext context) {
