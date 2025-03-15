@@ -1,13 +1,8 @@
 
-splash screen
-add copy button for gemini response
+
+snack bar for copying to clipboard uncomment?
 
 
-
-APP NAME and PROJECT ---> Weatherly
-logo for app
-
-
-optimise project and widgets and text styles
-new github with it --> all new files
+optimise project and widgets and text styles (make theme for all text styles and dicide all files)
+new GitHub with it --> all new files
 learn Bloc with it

@@ -31,6 +31,17 @@ class $AssetsImagesGen {
   /// File path: assets/images/cloud_bar.svg
   String get cloudBar => 'assets/images/cloud_bar.svg';
 
+  /// File path: assets/images/compass.jpg
+  AssetGenImage get compass => const AssetGenImage('assets/images/compass.jpg');
+
+  /// File path: assets/images/compass_icon.png
+  AssetGenImage get compassIcon =>
+      const AssetGenImage('assets/images/compass_icon.png');
+
+  /// File path: assets/images/date_conversion.png
+  AssetGenImage get dateConversion =>
+      const AssetGenImage('assets/images/date_conversion.png');
+
   /// File path: assets/images/day_clouds.png
   AssetGenImage get dayClouds =>
       const AssetGenImage('assets/images/day_clouds.png');
@@ -92,6 +103,10 @@ class $AssetsImagesGen {
   AssetGenImage get smallWind =>
       const AssetGenImage('assets/images/small_wind.png');
 
+  /// File path: assets/images/splash_with_Text.JPEG
+  AssetGenImage get splashWithText =>
+      const AssetGenImage('assets/images/splash_with_Text.JPEG');
+
   /// File path: assets/images/sunrise.png
   AssetGenImage get sunrise => const AssetGenImage('assets/images/sunrise.png');
 
@@ -103,50 +118,62 @@ class $AssetsImagesGen {
   AssetGenImage get uvSmall =>
       const AssetGenImage('assets/images/uv_small.png');
 
+  /// File path: assets/images/weatherly.JPEG
+  AssetGenImage get weatherly =>
+      const AssetGenImage('assets/images/weatherly.JPEG');
+
   /// File path: assets/images/wind_bar.svg
   String get windBar => 'assets/images/wind_bar.svg';
 
   /// List of all assets
   List<dynamic> get values => [
-        azadWestLogo,
-        moon,
-        sun,
-        union,
-        bot,
-        cloudBar,
-        dayClouds,
-        dayRain,
-        daySnow,
-        dayStormThunder,
-        dayWind,
-        gemini,
-        github,
-        humidityBarPng,
-        humidityBarSvg,
-        linkedin,
-        nightClouds,
-        nightSnow,
-        nightStormThunderPng,
-        nightWind,
-        pressure,
-        smallWind,
-        sunrise,
-        tempture,
-        uvSmall,
-        windBar
-      ];
+    azadWestLogo,
+    moon,
+    sun,
+    union,
+    bot,
+    cloudBar,
+    compass,
+    compassIcon,
+    dateConversion,
+    dayClouds,
+    dayRain,
+    daySnow,
+    dayStormThunder,
+    dayWind,
+    gemini,
+    github,
+    humidityBarPng,
+    humidityBarSvg,
+    linkedin,
+    nightClouds,
+    nightSnow,
+    nightStormThunderPng,
+    nightWind,
+    pressure,
+    smallWind,
+    splashWithText,
+    sunrise,
+    tempture,
+    uvSmall,
+    weatherly,
+    windBar,
+  ];
 }
 
 class Assets {
-  Assets._();
+  const Assets._();
 
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName);
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
 
   final String _assetName;
+
+  final Size? size;
+  final Set<String> flavors;
 
   Image image({
     Key? key,
@@ -166,10 +193,10 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = false,
+    bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {
@@ -201,15 +228,8 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;

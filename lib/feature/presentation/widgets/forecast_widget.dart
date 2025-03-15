@@ -14,6 +14,8 @@ import 'package:tap_to_expand/tap_to_expand.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_event.dart';
 import 'package:test_app/feature/presentation/bloc/forecast_bloc/forecast_state.dart';
+import 'package:test_app/feature/presentation/pages/Compass.dart';
+import 'package:test_app/feature/presentation/pages/DateConversion.dart';
 import 'package:test_app/feature/presentation/pages/search_page.dart';
 import 'package:test_app/feature/presentation/widgets/loading_widget.dart';
 import 'package:test_app/feature/presentation/widgets/weather_info_widget.dart';
@@ -151,13 +153,14 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                         height: 50,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 8, right: 8),
+                        padding: const EdgeInsets.only(left: 12, right: 12),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
                                 CustomPopup(
+
                                   contentPadding: const EdgeInsets.all(10),
                                   showArrow: true,
                                   content: SizedBox(
@@ -165,30 +168,133 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                         InkWell(
-                                           onTap: ()=> Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) {
-                                          return ChatScreen();
-                                        })),
-                                           child: Row(
+                                        ///bot
+                                        InkWell(
+                                          onTap: () => Navigator.of(context).push(
+                                            PageRouteBuilder(
+                                              pageBuilder: (context, animation, secondaryAnimation) {
+                                                return ChatScreen();
+                                              },
+                                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                                const begin = Offset(1.0, 0.0);
+                                                const end = Offset.zero;
+                                                const curve = Curves.easeInOut;
+                                                var tween = Tween(begin: begin, end: end)
+                                                    .chain(CurveTween(curve: curve));
+                                                var offsetAnimation = animation.drive(tween);
 
+                                                return SlideTransition(
+                                                  position: offsetAnimation,
+                                                  child: child,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          child: Row(
                                             children: [
-                                                Image.asset(Assets.images.bot.path , height: 35,),
-
+                                              Image.asset(Assets.images.bot.path, height: 35),
                                               const SizedBox(
                                                 width: 2,
                                               ),
                                               const Padding(
                                                 padding: EdgeInsets.only(top: 8.0),
-                                                child: Text("Gemini", style: AppTextStyles.search,),
+                                                child: Text("Gemini", style: AppTextStyles.search),
                                               )
                                             ],
-                                                                                   ),
-                                         ),
+                                          ),
+                                        ),
                                         const SizedBox(
                                           height: 15,
                                         ),
+                                        ///compass
+                                        InkWell(
+                                          onTap: () => Navigator.of(context).push(
+                                            PageRouteBuilder(
+                                              pageBuilder: (context, animation, secondaryAnimation) {
+                                                return CompassScreen();
+                                              },
+                                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                                const begin = Offset(1.0, 0.0);
+                                                const end = Offset.zero;
+                                                const curve = Curves.easeInOut;
+                                                var tween = Tween(begin: begin, end: end)
+                                                    .chain(CurveTween(curve: curve));
+                                                var offsetAnimation = animation.drive(tween);
+
+                                                return SlideTransition(
+                                                  position: offsetAnimation,
+                                                  child: child,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                              decoration: BoxDecoration(
+                                                  color: const Color(0xff0571dd),
+                                                  borderRadius: BorderRadius.circular(22),
+                                              ),
+                                              height: 37,
+                                              width: 37,
+                                              child: Image.asset(Assets.images.compassIcon.path , color: Colors.white,height: 22,),
+                                              ),
+                                              const SizedBox(
+                                                width: 2,
+                                              ),
+                                              const Padding(
+                                                padding: EdgeInsets.only(top: 1.0, left: 5),
+                                                child: Text("Compass", style: AppTextStyles.search),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        ///Date Conversion
+                                        InkWell(
+                                          onTap: () => Navigator.of(context).push(
+                                            PageRouteBuilder(
+                                              pageBuilder: (context, animation, secondaryAnimation) {
+                                                return DateConversionScreen();
+                                              },
+                                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                                const begin = Offset(1.0, 0.0);
+                                                const end = Offset.zero;
+                                                const curve = Curves.easeInOut;
+                                                var tween = Tween(begin: begin, end: end)
+                                                    .chain(CurveTween(curve: curve));
+                                                var offsetAnimation = animation.drive(tween);
+
+                                                return SlideTransition(
+                                                  position: offsetAnimation,
+                                                  child: child,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                          decoration: BoxDecoration(
+                                          color: Color(0xff0571dd),
+                                            borderRadius: BorderRadius.circular(22),),
+                                                  child: Image.asset(Assets.images.dateConversion.path, height: 35 , color: Colors.white,)),
+                                              const SizedBox(
+                                                width: 2,
+                                              ),
+                                              const Padding(
+                                                padding: EdgeInsets.only(top: 1.0, left: 5),
+                                                child: Text("Date Conversion", style: AppTextStyles.search),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        ///info
                                         InkWell(
                                           onTap: () async {
                                             await Navigator.of(context).push(
@@ -196,9 +302,8 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                                                 pageBuilder: (context, animation, secondaryAnimation) {
                                                   return const InfoScreen();
                                                 },
-                                                transitionsBuilder:
-                                                    (context, animation, secondaryAnimation, child) {
-                                                  const begin = Offset(0.0, 1.0);
+                                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                                  const begin = Offset(1.0, 0.0);
                                                   const end = Offset.zero;
                                                   const curve = Curves.easeInOut;
                                                   var tween = Tween(begin: begin, end: end)
@@ -213,18 +318,26 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                                               ),
                                             );
                                           },
-                                          child: const Row(
+                                          child:  Row(
                                             children: [
-                                              Icon(
-                                                Icons.info_outline_rounded,
-                                                size: 35,
+                                              Container(
+
+                                                child: Icon(
+                                                  Icons.info_outline_rounded,
+                                                  size: 35,
+                                                  color: Colors.white,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xff0571dd),
+                                                  borderRadius: BorderRadius.circular(22),
+                                                ),
                                               ),
                                               SizedBox(
                                                 width: 2,
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(left: 2.0),
-                                                child: Text("Info" , style: AppTextStyles.search,),
+                                                child: Text("Info", style: AppTextStyles.search),
                                               )
                                             ],
                                           ),
@@ -237,6 +350,7 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                                     size: 36,
                                     color: Colors.white,
                                   ),
+
                                 ),
                                 const SizedBox(
                                   width: 5,
@@ -742,7 +856,7 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
 
                       ///first two small widget
                       Padding(
-                        padding: const EdgeInsets.only(left: 25, right: 25),
+                        padding: const EdgeInsets.only(left: 25, right: 10),
                         child: Row(
                           children: [
                             WeatherInfoCard(
@@ -758,6 +872,7 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                             const SizedBox(width: 15),
                             WeatherInfoCard(
                               title: "GUST",
+                              valuetStyle: AppTextStyles.medium,
                               value: '${forecast.current?.gustkph}',
                               unitStyle: AppTextStyles.kph,
                               unit: "Kp/h",
@@ -917,14 +1032,14 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
 
                       ///second two small widget
                       Padding(
-                        padding: const EdgeInsets.only(left: 25, right: 25),
+                        padding: const EdgeInsets.only(left: 25, right: 10),
                         child: Row(
                           children: [
                             WeatherInfoCard(
                               title: "UV INDEX",
                               value: forecast.forecast?.forecastday?.first?.day?.uv?.toString() ?? "No Data",
                               unit: "",
-                              description: "Wear sunglasses to protect your eyes",
+                              description: "Wear sunglasses.",
                               iconPath: "assets/images/uv_small.png",
                               progressBar: UVIndexBar(
                                   uvIndex: forecast.forecast?.forecastday?.first?.day?.uv?.toDouble() ?? 0.0),
@@ -934,7 +1049,8 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                             const SizedBox(width: 15),
                             WeatherInfoCard(
                               title: "PRESSURE",
-                              value: forecast.current?.pressuremb?.toString() ?? "",
+                              valuetStyle: AppTextStyles.medium,
+                              value: forecast.current?.pressuremb?.toInt().toString() ?? "",
                               unit: "mb",
                               unitStyle: AppTextStyles.mb,
                               description: "Indicating how heavy or light it is in location",
@@ -1123,6 +1239,12 @@ class AppTextStyles {
     fontFamily: 'Sahel',
     color: Colors.grey[700],
   );
+  static TextStyle geminiFarsiBlackSamller = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'Sahel',
+    color: Colors.grey[800],
+  );
   static const TextStyle SubttileinfoStyle = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w600,
@@ -1142,12 +1264,38 @@ class AppTextStyles {
     fontFamily: 'Sahel',
     color: Colors.black,
   );
+  static const TextStyle dateCovertor = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Sahel',
+    color: Colors.black,
+  );
+
+  static const TextStyle dateCovertortitle = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Sahel',
+    color: Colors.black,
+  );
+
+  static const TextStyle dateCovertorWhite = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'SF',
+    color: Colors.white,
+  );
 
   static const TextStyle today = TextStyle(
     fontSize: 22,
     fontWeight: FontWeight.w600,
     fontFamily: 'SF',
     color: Colors.white,
+  );
+  static const TextStyle todayBlack = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'SF',
+    color: Colors.grey,
   );
 
   static const TextStyle info = TextStyle(
@@ -1180,6 +1328,11 @@ class AppTextStyles {
     fontFamily: 'SF',
     color: Colors.white,
   );
+
+  static const TextStyle medium = TextStyle(
+    fontSize: 40, fontWeight: FontWeight.w500, color: Color(0xe5c7e9ff) ,  fontFamily: 'SF',
+  );
+
   static const TextStyle subheading = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w500,
@@ -1213,7 +1366,7 @@ class AppTextStyles {
   static const TextStyle pressure =
       TextStyle(fontSize: 40, fontFamily: 'SF', fontWeight: FontWeight.w500, color: Color(0xe5c7e9ff));
   static const TextStyle kph =
-      TextStyle(fontSize: 20, fontWeight: FontWeight.w500, fontFamily: 'SF', color: Color(0xe5c7e9ff));
+      TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'SF', color: Color(0xe5c7e9ff));
 
   static const TextStyle days = TextStyle(
     fontSize: 17,

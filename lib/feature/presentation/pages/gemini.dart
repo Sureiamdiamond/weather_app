@@ -3,6 +3,7 @@ import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:test_app/feature/presentation/widgets/forecast_widget.dart';
 import 'package:test_app/gen/assets.gen.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:clipboard/clipboard.dart'; // اضافه کردن پکیج کلیپ‌بورد
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -12,10 +13,8 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   List<Map<String, dynamic>> messages = [];
-  final String apiKey = 'Your key';
+  final String apiKey = 'AIzaSyBHMvOC-PkYDx2CaOEP9aEoHRgxooPEWSo';
   bool isLoading = false;
-
-  // Add a ScrollController
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -26,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    _scrollController.dispose(); // Don't forget to dispose of the controller.
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -43,15 +42,13 @@ class _ChatScreenState extends State<ChatScreen> {
       });
       askGemini(_controller.text);
       _controller.clear();
-      _scrollToBottom(); // Scroll to the bottom when a new message is added
+      _scrollToBottom();
     }
   }
 
   void askGemini(String prompt) async {
     try {
-      final response = await Gemini.instance.prompt(parts: [
-        Part.text(prompt),
-      ]);
+      final response = await Gemini.instance.prompt(parts: [Part.text(prompt)]);
       setState(() {
         String formattedTime = intl.DateFormat('HH:mm').format(DateTime.now());
         messages.add({
@@ -61,18 +58,13 @@ class _ChatScreenState extends State<ChatScreen> {
         });
         isLoading = false;
       });
-      _scrollToBottom(); // Scroll to the bottom when a new message is received
+      _scrollToBottom();
     } catch (e) {
       setState(() {
         String formattedTime = intl.DateFormat('HH:mm').format(DateTime.now());
-        String errorMessage = 'Error occurred';
-
-        if (e.toString().contains('403')) {
-          errorMessage = 'لطفا اینترنت خود را بررسی کنید یا از متصل بودن فیلترشکن مطمئن شوید';
-        } else {
-          errorMessage = 'Error: ${e.toString()}';
-        }
-
+        String errorMessage = e.toString().contains('403')
+            ? 'لطفا اینترنت خود را بررسی کنید یا از متصل بودن فیلترشکن مطمئن شوید'
+            : 'Error: ${e.toString()}';
         messages.add({
           'text': errorMessage,
           'isMe': false,
@@ -80,13 +72,12 @@ class _ChatScreenState extends State<ChatScreen> {
         });
         isLoading = false;
       });
-      _scrollToBottom(); // Scroll to the bottom in case of error
+      _scrollToBottom();
     }
   }
 
-  // Function to scroll to the bottom
   void _scrollToBottom() {
-    Future.delayed(Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
     });
   }
@@ -94,6 +85,34 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isPersian(String text) {
     final persianRegex = RegExp(r'[\u0600-\u06FF]');
     return persianRegex.hasMatch(text);
+  }
+
+
+  void _copyToClipboard(String text) {
+    FlutterClipboard.copy(text).then((value) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     elevation: 0,
+      //     padding:   const EdgeInsets.only(bottom: 16 , right: 8 , left: 8),
+      //     backgroundColor: const Color(0x00234354),
+      //     content: Container(
+      //       padding: const EdgeInsets.all(12),
+      //       decoration: BoxDecoration(
+      //         color: const Color(0xEA021422), // Background color
+      //         borderRadius: BorderRadius.circular(30), // Rounded corners
+      //       ),
+      //       child: const Center(
+      //         child: Text(
+      //          'Copied to clipboard!',
+      //           style: AppTextStyles.geminiFarsi,
+      //         ),
+      //       ),
+      //     ),
+      //
+      //     duration: const Duration(milliseconds: 1400),
+      //   ),
+      // );
+    });
   }
 
   @override
@@ -116,7 +135,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   },
                 ),
                 Image.asset(Assets.images.gemini.path, height: 35),
-                const SizedBox(width: 50)
+                const SizedBox(width: 50),
               ],
             ),
           ),
@@ -132,17 +151,18 @@ class _ChatScreenState extends State<ChatScreen> {
                     "برای استفاده از من باید حتما فیلترشکن روشن باشه!",
                     textDirection: TextDirection.rtl,
                     style: AppTextStyles.geminiFarsiBlack,
-                  )
+                  ),
                 ],
               ),
             )
                 : ListView.builder(
               reverse: false,
               itemCount: messages.length + (isLoading ? 1 : 0),
-              controller: _scrollController, // Attach the controller here
+              controller: _scrollController,
               itemBuilder: (context, index) {
                 if (isLoading && index == messages.length) {
-                  return const Center(child: CircularProgressIndicator(color: Color(0xff0064b6),));
+                  return const Center(
+                      child: CircularProgressIndicator(color: Color(0xff0064b6)));
                 }
                 final message = messages[index];
                 return Align(
@@ -153,8 +173,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     padding: const EdgeInsets.only(right: 4, left: 4),
                     child: Container(
                       width: message['isMe'] ? null : 350,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 8),
+                      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: message['isMe']
@@ -169,17 +188,27 @@ class _ChatScreenState extends State<ChatScreen> {
                             message['text'],
                             style: isPersian(message['text'])
                                 ? AppTextStyles.geminiFarsi
-                                : const TextStyle(
-                              color:  Colors.white
-                              ,
-                              fontSize: 17,
-                            ),
+                                : const TextStyle(color: Colors.white, fontSize: 17),
                           ),
-                          Text(
-                            message['time'],
-                            style: const TextStyle(
-                                fontSize: 10, color: Colors.white54),
-                          ),
+                        !message['isMe']
+                            ?
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                message['time'],
+                                style: const TextStyle(fontSize: 10, color: Colors.white54),
+                              ),
+                                IconButton(
+                                  icon: const Icon(Icons.copy, color: Colors.white54, size: 20),
+                                  onPressed: () => _copyToClipboard(message['text']),
+                                ),
+                            ],
+                          ):
+                    Text(
+                    message['time'],
+                    style: const TextStyle(fontSize: 10, color: Colors.white54),
+                ),
                         ],
                       ),
                     ),
@@ -189,8 +218,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           Padding(
-            padding:
-            const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 8),
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 8),
             child: Row(
               children: [
                 Expanded(
@@ -208,8 +236,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 const SizedBox(width: 8),
                 IconButton(
-                  icon: const Icon(Icons.send_rounded,
-                      color: Color(0xff0e6ab6), size: 30),
+                  icon: const Icon(Icons.send_rounded, color: Color(0xff0e6ab6), size: 30),
                   onPressed: sendMessage,
                 ),
               ],

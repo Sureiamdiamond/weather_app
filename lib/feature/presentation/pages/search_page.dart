@@ -108,16 +108,7 @@ class _SearchPageState extends State<SearchPage> {
                         }
                       },
                     ),
-                  IconButton(
-                    icon: Icon(_isListening ? Icons.mic_off : Icons.mic, color: Colors.grey),
-                    onPressed: () {
-                      if (_isListening) {
-                        _stopListening();
-                      } else {
-                        _startListening();
-                      }
-                    },
-                  ),
+
                 ],
               ),
             ),
@@ -135,7 +126,7 @@ class _SearchPageState extends State<SearchPage> {
                     itemBuilder: (context, index) {
                       final location = state.locations[index];
                       return ListTile(
-                        title: Text(location.name ?? "" , style: AppTextStyles.search),
+                        title: Text(location.name ?? "", style: AppTextStyles.search),
                         subtitle: Text("${location.country}, ${location.region}"),
                         tileColor: Color(0x348eb6ff),
                         shape: RoundedRectangleBorder(
@@ -149,7 +140,19 @@ class _SearchPageState extends State<SearchPage> {
                     separatorBuilder: (context, index) => const SizedBox(height: 10.0),
                   );
                 }
-                return Container();
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.map,
+                      size: 60,
+                      color: Colors.grey,
+                    ),
+                    Text("Search the city name" , style: AppTextStyles.todayBlack,)
+                  ],
+                );
               },
             ),
           ),
