@@ -1,8 +1,7 @@
 
 
 snack bar for copying to clipboard uncomment?
-
+add gemini , compass and date conversion to karamoozi description
 
 optimise project and widgets and text styles (make theme for all text styles and dicide all files)
-new GitHub with it --> all new files
 learn Bloc with it
