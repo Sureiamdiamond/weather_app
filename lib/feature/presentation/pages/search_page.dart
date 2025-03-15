@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_event.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_state.dart';
@@ -21,9 +22,10 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    _controller.addListener(() {
+      setState(() {});
+    });
   }
-
-
 
   @override
   Widget build(BuildContext context) {

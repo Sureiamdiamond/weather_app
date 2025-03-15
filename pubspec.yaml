@@ -67,6 +67,7 @@ dependencies:
   permission_handler: ^11.4.0
   flutter_linear_datepicker: ^2.0.6
   shamsi_date: ^1.0.4
+  speech_to_text: ^7.0.0
 
 
 
