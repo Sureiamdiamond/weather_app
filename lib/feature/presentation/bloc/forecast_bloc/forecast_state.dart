@@ -14,14 +14,14 @@ class ForecastLoading extends ForecastState {}
 class ForecastLoaded extends ForecastState {
   final GeneralForecastEntity forecast;
 
-  ForecastLoaded({required this.forecast});
+  const ForecastLoaded({required this.forecast});
   @override
   List<Object> get props => [forecast];
 }
 
 class ForecastError extends ForecastState {
   final String message;
-  ForecastError({required this.message});
+  const ForecastError({required this.message});
   @override
   List<Object> get props => [message];
 }

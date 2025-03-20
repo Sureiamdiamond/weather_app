@@ -36,7 +36,6 @@ class ForecastWidget extends StatefulWidget {
 class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProviderStateMixin {
   String location = 'Tehran';
   Logger logger = Logger();
-
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _loadingFadeAnimation;
@@ -44,7 +43,6 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
   void _fetchForecast() {
     BlocProvider.of<ForecastBloc>(context).add(GeneralForecast(location: location, days: 7));
   }
-
 
   Future<void> _loadLocation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -88,12 +86,6 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
     _fadeController.dispose();
     super.dispose();
   }
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +136,7 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                           children: [
                             Row(
                               children: [
-                               AppMenu(),
+                               const AppMenu(),
                                 const SizedBox(
                                   width: 5,
                                 ),
@@ -153,7 +145,7 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           elevation: 0,
-                                          backgroundColor: const Color(0x234354),
+                                          backgroundColor: const Color(0x00234354),
                                           content: Container(
                                             width: 700,
                                             height: 60,
@@ -215,6 +207,7 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                                       barrierDismissible: false,
                                       builder: (context) {
                                         return const Scaffold(
+                                          backgroundColor: Colors.white,
                                           body: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
@@ -331,7 +324,10 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                                         SvgPicture.asset(
                                           'assets/images/Union.svg',
                                           height: 16,
-                                          color: Colors.white,
+                                          colorFilter: const ColorFilter.mode(
+                                            Colors.white,
+                                            BlendMode.srcIn,
+                                          ),
                                         ),
                                         const SizedBox(
                                           width: 5,

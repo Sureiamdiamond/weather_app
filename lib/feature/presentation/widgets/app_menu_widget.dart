@@ -28,7 +28,7 @@ class AppMenu extends StatelessWidget {
               onTap: () => Navigator.of(context).push(
                 PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) {
-                    return ChatScreen();
+                    return const ChatScreen();
                   },
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     const begin = Offset(1.0, 0.0);

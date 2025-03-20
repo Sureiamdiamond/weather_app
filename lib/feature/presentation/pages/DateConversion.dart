@@ -6,6 +6,8 @@ import '../style/text_styles.dart';
 
 
 class DateConversionScreen extends StatefulWidget {
+  const DateConversionScreen({super.key});
+
   @override
   _DateConversionScreenState createState() => _DateConversionScreenState();
 }
@@ -140,7 +142,7 @@ class _DateConversionScreenState extends State<DateConversionScreen> {
                     Text(
                       textDirection: TextDirection.rtl,
                       _formatPersianDate(convertedHijriDate),
-                      style: AppTextStyles.dateCovertor,
+                      style: AppTextStyles.dateConvertor,
                     ),
                   ],
                 ) else
@@ -154,7 +156,7 @@ class _DateConversionScreenState extends State<DateConversionScreen> {
                     const SizedBox(height: 8,),
                     Text(
                       gregorianDate,
-                      style: AppTextStyles.dateCovertor,
+                      style: AppTextStyles.dateConvertor,
                     ),
                   ],
                 ),

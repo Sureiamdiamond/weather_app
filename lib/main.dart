@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
         ),
         debugShowCheckedModeBanner: false,
-        home:  HomePage(),
+        home:  const HomePage(),
         // home: const test(),
       ),
     );

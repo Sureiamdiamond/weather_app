@@ -16,7 +16,7 @@ class WeatherInfoCard extends StatefulWidget {
   final TextStyle? valuetStyle; // New parameter for unit styling
 
   const WeatherInfoCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
     required this.unit,
@@ -27,7 +27,7 @@ class WeatherInfoCard extends StatefulWidget {
     this.unitStyle,
     this.valuetStyle,
 
-  }) : super(key: key);
+  });
 
   @override
   State<WeatherInfoCard> createState() => _WeatherInfoCardState();
@@ -45,7 +45,6 @@ class _WeatherInfoCardState extends State<WeatherInfoCard> {
 
     return Bounceable(
       onTap: () {
-        print("tap");
       },
       onLongPress: () {},
       child: FlipCard(

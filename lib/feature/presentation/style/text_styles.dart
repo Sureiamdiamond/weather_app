@@ -22,7 +22,7 @@ class AppTextStyles {
     color: Colors.white,
   );
 
-  static const TextStyle HeaderInfoStyle = TextStyle(
+  static const TextStyle headerInfoStyle = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w500,
     fontFamily: 'Sahel',
@@ -57,28 +57,28 @@ class AppTextStyles {
     color: Colors.grey[800],
   );
 
-  static const TextStyle SubttileinfoStyle = TextStyle(
+  static const TextStyle subtitileInfo = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.w600,
     fontFamily: 'Sahel',
     color: Colors.black,
   );
 
-  static const TextStyle ProjectDes = TextStyle(
+  static const TextStyle projectDes = TextStyle(
     fontSize: 17,
     fontWeight: FontWeight.w600,
     fontFamily: 'Sahel',
     color: Color(0xbb191e22),
   );
 
-  static const TextStyle TtileInfoStyle = TextStyle(
+  static const TextStyle ttileInfoStyle = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w500,
     fontFamily: 'Sahel',
     color: Colors.black,
   );
 
-  static const TextStyle dateCovertor = TextStyle(
+  static const TextStyle dateConvertor = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w700,
     fontFamily: 'Sahel',
@@ -215,7 +215,7 @@ class AppTextStyles {
     color: Colors.white,
   );
 
-  // استایل‌های inline که در کد استفاده شده‌اند
+
   static const TextStyle errorText = TextStyle(
     color: Colors.white,
     fontSize: 20,

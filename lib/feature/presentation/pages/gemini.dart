@@ -4,9 +4,11 @@ import 'package:test_app/gen/assets.gen.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:clipboard/clipboard.dart';
 
-import '../style/text_styles.dart'; // اضافه کردن پکیج کلیپ‌بورد
+import '../style/text_styles.dart';
 
 class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key});
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }

@@ -10,5 +10,5 @@ abstract class LocationSearchEvent extends Equatable {
 class SearchLocations extends LocationSearchEvent {
   final String location;
 
-  SearchLocations({required this.location});
+  const SearchLocations({required this.location});
 }
