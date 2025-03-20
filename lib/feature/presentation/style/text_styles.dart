@@ -149,7 +149,7 @@ class AppTextStyles {
   );
 
   static const TextStyle medium = TextStyle(
-    fontSize: 40,
+    fontSize: 44,
     fontWeight: FontWeight.w500,
     color: Color(0xe5c7e9ff),
     fontFamily: 'SF',

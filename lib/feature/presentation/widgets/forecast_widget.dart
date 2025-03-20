@@ -128,12 +128,13 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                     padding: EdgeInsets.zero,
                     child: Column(children: [
                       const SizedBox(height: 50),
-                      ///menu
+                      ///Appbar
                       Padding(
                         padding: const EdgeInsets.only(left: 12, right: 12),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            ///menu
                             Row(
                               children: [
                                const AppMenu(),
@@ -597,7 +598,7 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                           ],
                         ),
                       ),
-                      ///first two small widget
+                      ///First two small widget
                       Padding(
                         padding: const EdgeInsets.only(left: 25, right: 10),
                         child: Row(
@@ -605,6 +606,7 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                             WeatherInfoCard(
                               title: "FEELS LIKE",
                               value: '${forecast.current?.feelslikec?.toInt()}',
+                              valuetStyle: AppTextStyles.gust,
                               unit: "°",
                               unitStyle: AppTextStyles.pressure,
                               description: temperatureMessage,
@@ -634,7 +636,7 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
                       SunSetPicture(forecast: forecast),
                       const SizedBox(
                           height: 5),
-                      ///second two small widget
+                      ///Second two small widget
                       Padding(
                         padding: const EdgeInsets.only(left: 25, right: 10),
                         child: Row(
@@ -687,9 +689,3 @@ class _ForecastWidgetState extends State<ForecastWidget> with SingleTickerProvid
     );
   }
 }
-
-
-
-
-
-
