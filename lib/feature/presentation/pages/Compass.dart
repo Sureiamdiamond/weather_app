@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:test_app/gen/assets.gen.dart';
 
-import '../widgets/forecast_widget.dart';
+import '../style/text_styles.dart';
 
 class CompassScreen extends StatefulWidget {
   const CompassScreen({
@@ -33,7 +33,7 @@ class _CompassScreenState extends State<CompassScreen> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: const Color(0xff045395),
-          title: const Text('Compass', style: AppTextStyles.info),
+          title: Text('Compass', style: AppTextStyles.info),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
             onPressed: () {

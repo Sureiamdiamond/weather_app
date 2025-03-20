@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:test_app/feature/presentation/widgets/forecast_widget.dart';
 import 'package:test_app/gen/assets.gen.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:clipboard/clipboard.dart'; // اضافه کردن پکیج کلیپ‌بورد
+import 'package:clipboard/clipboard.dart';
+
+import '../style/text_styles.dart'; // اضافه کردن پکیج کلیپ‌بورد
 
 class ChatScreen extends StatefulWidget {
   @override

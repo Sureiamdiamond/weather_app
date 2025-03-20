@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:test_app/gen/assets.gen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../widgets/forecast_widget.dart';
+import '../style/text_styles.dart';
 
 class InfoScreen extends StatelessWidget {
   const InfoScreen({super.key});
@@ -12,8 +12,8 @@ class InfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff045395),
-        title:  Text('Info Screen' , style: AppTextStyles.info,),
+        backgroundColor: const Color(0xff045395),
+        title:  const Text('Info Screen' , style: AppTextStyles.info,),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back , color: Colors.white,size: 28,),
           onPressed: () {
@@ -28,7 +28,7 @@ class InfoScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               Image.asset(Assets.images.azadWestLogo.path, height: 270,),
               const SizedBox(height: 30,),
               const Text("پروژه ی ترم ۸ - نیمسال دوم ۱۴۰۳ (۱۴۰۴-۱۴۰۳)",

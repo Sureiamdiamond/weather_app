@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linear_datepicker/flutter_datepicker.dart';
 import 'package:shamsi_date/shamsi_date.dart';
-import 'package:test_app/feature/presentation/widgets/forecast_widget.dart';
+
+import '../style/text_styles.dart';
+
 
 class DateConversionScreen extends StatefulWidget {
   @override
@@ -134,7 +136,7 @@ class _DateConversionScreenState extends State<DateConversionScreen> {
                       textDirection: TextDirection.rtl,
                       style: AppTextStyles.dateCovertortitle,
                     ),
-                    SizedBox(height: 8,),
+                    const SizedBox(height: 8,),
                     Text(
                       textDirection: TextDirection.rtl,
                       _formatPersianDate(convertedHijriDate),
@@ -149,7 +151,7 @@ class _DateConversionScreenState extends State<DateConversionScreen> {
                       textDirection: TextDirection.rtl,
                       style: AppTextStyles.dateCovertortitle,
                     ),
-                    SizedBox(height: 8,),
+                    const SizedBox(height: 8,),
                     Text(
                       gregorianDate,
                       style: AppTextStyles.dateCovertor,
@@ -260,7 +262,7 @@ class _DateConversionScreenState extends State<DateConversionScreen> {
 
                 )
               ],),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               ElevatedButton(
                 onPressed: () {
                   if (showGregorianPicker) {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_bloc.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_event.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_state.dart';
-import 'package:test_app/feature/presentation/widgets/forecast_widget.dart';
 import 'package:test_app/feature/presentation/widgets/loading_widget.dart';
+
+import '../style/text_styles.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -100,7 +100,7 @@ class _SearchPageState extends State<SearchPage> {
                       return ListTile(
                         title: Text(location.name ?? "", style: AppTextStyles.search),
                         subtitle: Text("${location.country}, ${location.region}"),
-                        tileColor: Color(0x348eb6ff),
+                        tileColor: const Color(0x348eb6ff),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(13.0),
                         ),
@@ -113,7 +113,7 @@ class _SearchPageState extends State<SearchPage> {
                   );
                 }
 
-                return Column(
+                return const Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
