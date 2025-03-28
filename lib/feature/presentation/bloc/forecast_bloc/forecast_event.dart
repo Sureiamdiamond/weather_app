@@ -11,5 +11,5 @@ class GeneralForecast extends ForecastEvent {
   final String location;
   final int days;
 
-  GeneralForecast({required this.location, required this.days});
+  const GeneralForecast({required this.location, required this.days});
 }

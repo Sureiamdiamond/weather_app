@@ -6,7 +6,6 @@ import 'package:test_app/feature/domain/entities/location_entity.dart';
 
 class ForecastEntity {
   List<ForecastdayEntity?>? forecastday;
-
   ForecastEntity({this.forecastday});
 }
 

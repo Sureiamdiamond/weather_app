@@ -14,16 +14,13 @@ class LocationLoading extends LocationSearchState {}
 
 class LocationLoaded extends LocationSearchState {
   final List<SearchLocationEntity> locations;
-
   const LocationLoaded({required this.locations});
-
   @override
   List<Object> get props => [locations];
 }
 
 class LocationSearchError extends LocationSearchState {
   final String message;
-
   const LocationSearchError({required this.message});
 
   @override

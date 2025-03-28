@@ -1,4 +1,4 @@
-import 'dart:async';
+ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:logger/logger.dart';
@@ -7,8 +7,7 @@ import 'package:test_app/feature/domain/usecases/search_location.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_event.dart';
 import 'package:test_app/feature/presentation/bloc/search_bloc/search_state.dart';
 
-class LocationSearchBloc
-    extends Bloc<LocationSearchEvent, LocationSearchState> {
+class LocationSearchBloc extends Bloc<LocationSearchEvent, LocationSearchState> {
   final SearchLocation searchLocation;
   Logger logger = Logger();
 
@@ -41,6 +40,8 @@ class LocationSearchBloc
           .e("An unexpected error occurred: $e"); // Логируем неожиданную ошибку
       emit(const LocationSearchError(message: "An unexpected error occurred."));
     }
+
+
   }
 
   String _failureToMessage(Failure failure) {

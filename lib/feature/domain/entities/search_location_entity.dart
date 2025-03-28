@@ -17,3 +17,4 @@ class SearchLocationEntity {
       this.lon,
       this.url});
 }
+
