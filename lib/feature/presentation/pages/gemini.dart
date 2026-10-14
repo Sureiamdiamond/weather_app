@@ -16,7 +16,8 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   List<Map<String, dynamic>> messages = [];
-  final String apiKey = 'AIzaSyBHMvOC-PkYDx2CaOEP9aEoHRgxooPEWSo';
+  // Pass the key at build time: flutter run --dart-define=GEMINI_API_KEY=your_key
+  static const String apiKey = String.fromEnvironment('GEMINI_API_KEY');
   bool isLoading = false;
   final ScrollController _scrollController = ScrollController();
 
