@@ -15,6 +15,14 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## Gemini API key
+
+The Gemini chat screen reads its key at build time, so no key lives in the repo:
+
+```
+flutter run --dart-define=GEMINI_API_KEY=your_key
+```
+
 ## Dependencies
 
 <details>
